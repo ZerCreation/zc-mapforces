@@ -4,18 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B723F8E7-274D-48C9-BEBC-A0DAB1DE8121}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>ZerCreation.MapForcesEngine.PrimarRunner</RootNamespace>
-    <AssemblyName>ZerCreation.MapForcesEngine.PrimarRunner</AssemblyName>
+    <ProjectGuid>{5BD83DC6-A4FC-4FA4-9594-8FE884908F45}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ZerCreation.MapForcesEngine</RootNamespace>
+    <AssemblyName>ZerCreation.MapForcesEngine</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -25,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -44,17 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Arbiters\ArbiterDispatcher.cs" />
+    <Compile Include="Arbiters\BattleArbiter.cs" />
+    <Compile Include="Arbiters\DiplomacyArbiter.cs" />
+    <Compile Include="AreaUnits\IUnit.cs" />
+    <Compile Include="AreaUnits\MovingUnit.cs" />
+    <Compile Include="AreaUnits\MovingArmy.cs" />
+    <Compile Include="AreaUnits\Types\AreaTypeBase.cs" />
+    <Compile Include="AreaUnits\Types\Earth.cs" />
+    <Compile Include="AreaUnits\Types\Water.cs" />
+    <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
+    <Compile Include="Arbiters\IArbiter.cs" />
+    <Compile Include="Arbiters\GeographyArbiter.cs" />
+    <Compile Include="Play\Player.cs" />
+    <Compile Include="Map\Cartographer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ZerCreation.MapForcesEngine\ZerCreation.MapForcesEngine.csproj">
-      <Project>{5bd83dc6-a4fc-4fa4-9594-8fe884908f45}</Project>
-      <Name>ZerCreation.MapForcesEngine</Name>
-    </ProjectReference>
+    <Compile Include="AreaUnits\AreaUnit.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
