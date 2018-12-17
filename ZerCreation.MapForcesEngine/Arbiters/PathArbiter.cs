@@ -3,10 +3,10 @@ using ZerCreation.MapForcesEngine.AreaUnits;
 
 namespace ZerCreation.MapForcesEngine.Arbiters
 {
-    public class DiplomacyArbiter : IArbiter
+    public class PathArbiter : IArbiter
     {
         /// <summary>
-        /// Checks if area can be conquered from diplomacy perspective
+        /// Checks if move of <paramref name="movingArmy"/> can be done or not
         /// </summary>
         /// <param name="movingArmy">Army which is input and output as result</param>
         /// <param name="areaTarget">Area which is input and output as result</param>

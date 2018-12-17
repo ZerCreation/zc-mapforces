@@ -5,6 +5,6 @@ namespace ZerCreation.MapForcesEngine.Arbiters
 {
     interface IArbiter
     {
-        void SolveMove(MovingArmy movingArmy, List<AreaUnit> areaTarget);
+        bool SolveMove(MovingArmy movingArmy, List<AreaUnit> areaTarget);
     }
 }

@@ -21,6 +21,7 @@ namespace ZerCreation.MapForcesEngine.Arbiters
         {
             this.arbiters = new List<IArbiter>
             {
+                new PathArbiter(),
                 new DiplomacyArbiter(),
                 new GeographyArbiter(),
                 new BattleArbiter()
@@ -29,9 +30,18 @@ namespace ZerCreation.MapForcesEngine.Arbiters
 
         internal void SolveMove(MovingArmy movingArmy, List<AreaUnit> areaTarget)
         {
+            MovingArmy movingArmyBeforeMove = null; // movingArmy.Clone();
+            List<AreaUnit> areaTargetBeforeMove = null; // areaTarget.Clone();
+
             foreach (IArbiter arbiter in arbiters)
             {
-                arbiter.SolveMove(movingArmy, areaTarget);
+                bool arbitionResult = arbiter.SolveMove(movingArmy, areaTarget);
+                if (!arbitionResult)
+                {
+                    movingArmy = movingArmyBeforeMove;
+                    areaTarget = areaTargetBeforeMove;
+                    return;
+                }
             }
 
             List<AreaUnit> newAreaTarget = null;
