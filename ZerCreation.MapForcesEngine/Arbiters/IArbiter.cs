@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using ZerCreation.MapForcesEngine.AreaUnits;
+﻿using ZerCreation.MapForcesEngine.Operations;
 
 namespace ZerCreation.MapForcesEngine.Arbiters
 {
     interface IArbiter
     {
-        bool SolveMove(MovingArmy movingArmy, List<AreaUnit> areaTarget);
+        bool SolveMove(MoveOperation moveOperation);
     }
 }

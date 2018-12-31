@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Operations;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Arbiters
@@ -21,31 +22,31 @@ namespace ZerCreation.MapForcesEngine.Arbiters
         {
             this.arbiters = new List<IArbiter>
             {
-                new PathArbiter(),
+                new TrackArbiter(),
                 new DiplomacyArbiter(),
                 new GeographyArbiter(),
                 new BattleArbiter()
             };
         }
 
-        internal void SolveMove(MovingArmy movingArmy, List<AreaUnit> areaTarget)
+        internal void SolveMove(MoveOperation moveOperation)
         {
-            MovingArmy movingArmyBeforeMove = null; // movingArmy.Clone();
-            List<AreaUnit> areaTargetBeforeMove = null; // areaTarget.Clone();
+            Army movingArmyBeforeMove = null; // movingArmy.Clone();
+            Area areaTargetBeforeMove = null; // areaTarget.Clone();
 
             foreach (IArbiter arbiter in arbiters)
             {
-                bool arbitionResult = arbiter.SolveMove(movingArmy, areaTarget);
+                bool arbitionResult = arbiter.SolveMove(moveOperation);
                 if (!arbitionResult)
                 {
-                    movingArmy = movingArmyBeforeMove;
-                    areaTarget = areaTargetBeforeMove;
+                    moveOperation.MovingArmy = movingArmyBeforeMove;
+                    moveOperation.AreaTarget = areaTargetBeforeMove;
                     return;
                 }
             }
 
             List<AreaUnit> newAreaTarget = null;
-            Player player = movingArmy.PlayerPossesion;
+            Player player = moveOperation.MovingArmy.PlayerPossesion;
 
             this.cartographer.UpdateUnitPossesion(newAreaTarget, player);
         }

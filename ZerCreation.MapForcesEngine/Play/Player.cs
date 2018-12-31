@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.Arbiters;
 using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Operations;
 
 namespace ZerCreation.MapForcesEngine.Play
 {
@@ -8,14 +9,16 @@ namespace ZerCreation.MapForcesEngine.Play
     {
         private readonly ArbiterDispatcher arbiterDispatcher;
 
+        public int MovePoints { get; set; }
+
         public Player(ArbiterDispatcher arbiterDispatcher)
         {
             this.arbiterDispatcher = arbiterDispatcher;
         }
 
-        public void Move(MovingArmy movingArmy, List<AreaUnit> areaTarget)
+        public void Move(MoveOperation moveOperation)
         {
-            this.arbiterDispatcher.SolveMove(movingArmy, areaTarget);
+            this.arbiterDispatcher.SolveMove(moveOperation);
         }
     }
 }
