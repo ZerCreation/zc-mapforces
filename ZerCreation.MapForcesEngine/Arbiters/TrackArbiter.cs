@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
@@ -32,7 +33,7 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             Vector moveVector = areaUnit.Position - movingUnit.Position;
             if (this.path == null)
             {
-                this.PreparePath(movingUnit.Position, moveVector);
+                this.PreparePath(movingUnit.Position, areaUnit.Position, moveVector);
             }
 
             Coordinates pointToMove = this.path.Dequeue();
@@ -42,12 +43,55 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             return true;
         }
 
-        private void PreparePath(Coordinates startPosition, Vector moveVector)
+        private void PreparePath(Coordinates startPosition, Coordinates endPosition, Vector moveVector)
         {
-            // TODO: Generate path for unit
+            this.path = new Queue<Coordinates>();
 
-            //movingUnit.X += Math.Sign(xDistance);
-            //movingUnit.Y += Math.Sign(yDistance);
+            // Calculates to get ratio less than 1
+            bool isMoreHorizontalMove = moveVector.X > moveVector.Y;
+            double directionRatio = isMoreHorizontalMove
+                ? moveVector.Y / moveVector.X
+                : moveVector.X / moveVector.Y;
+
+            double shorterDirBuffer = 0;
+            while (this.IsItFullPath(endPosition))
+            {
+                Coordinates prevPosition = this.path.Peek();
+                var newPosition = new Coordinates
+                {
+                    X = prevPosition.X,
+                    Y = prevPosition.Y
+                };
+                shorterDirBuffer += directionRatio;
+
+                if (isMoreHorizontalMove)
+                {
+                    newPosition.X++;
+                    if (shorterDirBuffer >= 1)
+                    {
+                        shorterDirBuffer--;
+                        newPosition.Y++;
+                    }
+                }
+                else
+                {
+                    newPosition.Y++;
+                    if (shorterDirBuffer >= 1)
+                    {
+                        shorterDirBuffer--;
+                        newPosition.X++;
+                    }
+                }
+
+                this.path.Enqueue(newPosition);
+            }
+        }
+
+        private bool IsItFullPath(Coordinates endPosition)
+        {
+            //const double targettingTolerance = 0.1; // Maybe not needed
+            // Implement Coordinates.IsEqual()
+            return !this.path.Any(_ => _.X == endPosition.X && _.Y == endPosition.Y);
         }
     }
 }
