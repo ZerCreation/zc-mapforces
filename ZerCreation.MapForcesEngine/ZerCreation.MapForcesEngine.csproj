@@ -55,6 +55,8 @@
     <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
+    <Compile Include="Map\Coordinates.cs" />
+    <Compile Include="Map\Vector.cs" />
     <Compile Include="Operations\MoveMode.cs" />
     <Compile Include="Operations\MoveOperation.cs" />
     <Compile Include="Play\Player.cs" />
