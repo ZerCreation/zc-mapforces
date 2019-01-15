@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
 
 namespace ZerCreation.MapForcesEngine.Arbiters
 {
     public class TrackArbiter : IArbiter
     {
+        private Queue<Coordinates> path;
+
         /// <summary>
         /// Checks if move of <paramref name="movingArmy"/> can be done or not
         /// </summary>
@@ -24,18 +28,26 @@ namespace ZerCreation.MapForcesEngine.Arbiters
 
             MovingUnit movingUnit = movingArmy.FetchNextUnit();
             AreaUnit areaUnit = areaTarget.FetchNextUnit();
+            
+            Vector moveVector = areaUnit.Position - movingUnit.Position;
+            if (this.path == null)
+            {
+                this.PreparePath(movingUnit.Position, moveVector);
+            }
 
-            // TODO: Improve
-            int xDistance = areaUnit.X - movingUnit.X;
-            int yDistance = areaUnit.Y - movingUnit.Y;
-
-            movingUnit.X += Math.Sign(xDistance);
-            movingUnit.Y += Math.Sign(yDistance);
-
-            var currentPlayer = movingArmy.PlayerPossesion;
-            currentPlayer.MovePoints--;
+            Coordinates pointToMove = this.path.Dequeue();
+            movingUnit.Position = pointToMove;
+            movingArmy.PlayerPossesion.MovePoints--;
 
             return true;
+        }
+
+        private void PreparePath(Coordinates startPosition, Vector moveVector)
+        {
+            // TODO: Generate path for unit
+
+            //movingUnit.X += Math.Sign(xDistance);
+            //movingUnit.Y += Math.Sign(yDistance);
         }
     }
 }

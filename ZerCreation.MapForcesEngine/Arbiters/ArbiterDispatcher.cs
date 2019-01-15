@@ -34,15 +34,18 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             Army movingArmyBeforeMove = null; // movingArmy.Clone();
             Area areaTargetBeforeMove = null; // areaTarget.Clone();
 
-            foreach (IArbiter arbiter in arbiters)
+            while (!moveOperation.MoveIsFinished)
             {
-                bool arbitionResult = arbiter.SolveMove(moveOperation);
-                if (!arbitionResult)
+                foreach (IArbiter arbiter in arbiters)
                 {
-                    moveOperation.MovingArmy = movingArmyBeforeMove;
-                    moveOperation.AreaTarget = areaTargetBeforeMove;
-                    return;
-                }
+                    bool arbitionResult = arbiter.SolveMove(moveOperation);
+                    if (!arbitionResult)
+                    {
+                        moveOperation.MovingArmy = movingArmyBeforeMove;
+                        moveOperation.AreaTarget = areaTargetBeforeMove;
+                        return;
+                    }
+                } 
             }
 
             List<AreaUnit> newAreaTarget = null;
