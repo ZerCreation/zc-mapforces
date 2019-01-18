@@ -50,8 +50,8 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             // Calculates to get ratio less than 1
             bool isMoreHorizontalMove = moveVector.X > moveVector.Y;
             double directionRatio = isMoreHorizontalMove
-                ? moveVector.Y / moveVector.X
-                : moveVector.X / moveVector.Y;
+                ? Math.Abs(moveVector.Y / moveVector.X)
+                : Math.Abs(moveVector.X / moveVector.Y);
 
             double shorterDirBuffer = 0;
             while (this.IsItFullPath(endPosition))
@@ -66,20 +66,20 @@ namespace ZerCreation.MapForcesEngine.Arbiters
 
                 if (isMoreHorizontalMove)
                 {
-                    newPosition.X++;
+                    newPosition.X += Math.Sign(moveVector.X);
                     if (shorterDirBuffer >= 1)
                     {
                         shorterDirBuffer--;
-                        newPosition.Y++;
+                        newPosition.Y += Math.Sign(moveVector.Y);
                     }
                 }
                 else
                 {
-                    newPosition.Y++;
+                    newPosition.Y += Math.Sign(moveVector.Y);
                     if (shorterDirBuffer >= 1)
                     {
                         shorterDirBuffer--;
-                        newPosition.X++;
+                        newPosition.X += Math.Sign(moveVector.X);
                     }
                 }
 
