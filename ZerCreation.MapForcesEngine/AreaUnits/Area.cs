@@ -1,10 +1,11 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 
 namespace ZerCreation.MapForcesEngine.AreaUnits
 {
     public class Area
     {
-        public AreaUnit[][] Units { get; set; }
+        public List<AreaUnit> Units { get; set; }
 
         internal AreaUnit FetchNextUnit()
         {

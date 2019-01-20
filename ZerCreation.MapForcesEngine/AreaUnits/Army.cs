@@ -1,13 +1,12 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.AreaUnits
 {
     public class Army
     {
-        private int unitsIterator = 0;
-
-        public MovingUnit[][] Units { get; set; }
+        public List<MovingUnit> Units { get; set; }
         public Player PlayerPossesion { get; set; }
 
         internal MovingUnit FetchNextUnit()

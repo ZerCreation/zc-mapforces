@@ -56,7 +56,10 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             double shorterDirBuffer = 0;
             while (this.IsItFullPath(endPosition))
             {
-                Coordinates prevPosition = this.path.Peek();
+                Coordinates prevPosition = this.path.Any() 
+                    ? this.path.Peek() 
+                    : startPosition;
+
                 var newPosition = new Coordinates
                 {
                     X = prevPosition.X,
