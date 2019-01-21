@@ -13,5 +13,10 @@
                 Y = coordinates1.Y - coordinates2.Y
             };
         }
+
+        public override string ToString()
+        {
+            return $"X: {this.X}, Y: {this.Y}";
+        }
     }
 }

@@ -53,12 +53,10 @@ namespace ZerCreation.MapForcesEngine.Arbiters
                 ? Math.Abs(moveVector.Y / moveVector.X)
                 : Math.Abs(moveVector.X / moveVector.Y);
 
+            Coordinates prevPosition = startPosition;
             double shorterDirBuffer = 0;
             while (this.IsItFullPath(endPosition))
             {
-                Coordinates prevPosition = this.path.Any() 
-                    ? this.path.Peek() 
-                    : startPosition;
 
                 var newPosition = new Coordinates
                 {
@@ -87,6 +85,7 @@ namespace ZerCreation.MapForcesEngine.Arbiters
                 }
 
                 this.path.Enqueue(newPosition);
+                prevPosition = newPosition;
             }
         }
 
