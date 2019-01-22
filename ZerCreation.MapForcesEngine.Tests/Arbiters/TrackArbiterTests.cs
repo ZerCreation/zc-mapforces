@@ -1,9 +1,11 @@
-﻿using NUnit.Framework;
+﻿using NSubstitute;
+using NUnit.Framework;
 using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.Arbiters;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
+using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Tests.Arbiters
 {
@@ -27,6 +29,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
                 Mode = MoveMode.Basic,
                 MovingArmy = new Army()
                 {
+                    PlayerPossesion = Substitute.For<Player>(),
                     Units = new List<MovingUnit>
                     {
                         new MovingUnit
