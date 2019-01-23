@@ -48,10 +48,14 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             this.path = new Queue<Coordinates>();
 
             // Calculates to get ratio less than 1
-            bool isMoreHorizontalMove = moveVector.X > moveVector.Y;
-            double directionRatio = isMoreHorizontalMove
-                ? Math.Abs(moveVector.Y / moveVector.X)
-                : Math.Abs(moveVector.X / moveVector.Y);
+            bool isMoreHorizontalMove = Math.Abs(moveVector.X) > Math.Abs(moveVector.Y);
+            double directionRatio = 0;
+            if (moveVector.X != 0 && moveVector.Y != 0)
+            {
+                directionRatio = isMoreHorizontalMove
+                    ? Math.Abs(moveVector.Y / moveVector.X)
+                    : Math.Abs(moveVector.X / moveVector.Y);
+            }
 
             Coordinates prevPosition = startPosition;
             double shorterDirBuffer = 0;

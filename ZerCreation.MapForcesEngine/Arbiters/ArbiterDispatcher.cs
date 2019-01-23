@@ -18,13 +18,13 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             this.arbiters = new List<IArbiter>
             {
                 new TrackArbiter(),
-                new DiplomacyArbiter(),
-                new GeographyArbiter(),
-                new BattleArbiter()
+                //new DiplomacyArbiter(),
+                //new GeographyArbiter(),
+                //new BattleArbiter()
             };
         }
-
-        internal void SolveMove(MoveOperation moveOperation)
+        
+        public void SolveMove(MoveOperation moveOperation)
         {
             Army movingArmyBeforeMove = null; // movingArmy.Clone();
             Area areaTargetBeforeMove = null; // areaTarget.Clone();
