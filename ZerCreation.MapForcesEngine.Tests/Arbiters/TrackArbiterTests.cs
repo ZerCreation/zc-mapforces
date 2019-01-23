@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.Arbiters;
 using ZerCreation.MapForcesEngine.AreaUnits;
@@ -21,7 +22,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
         }
 
         [Test]
-        public void Should_move_one_unit_basically_RightDown()
+        public void Should_prepare_simple_move_path_without_any_exception()
         {
             // Given
             var moveOperation = new MoveOperation
@@ -34,11 +35,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
                     {
                         new MovingUnit
                         {
-                            Position = new Coordinates
-                            {
-                                X = 10,
-                                Y = 10
-                            }
+                            Position = new Coordinates(10, 10)
                         }
                     }
                 },
@@ -48,21 +45,17 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
                     {
                         new AreaUnit
                         {
-                            Position = new Coordinates
-                            {
-                                X = 20,
-                                Y = 20
-                            }
+                            Position = new Coordinates(20, 20)
                         }
                     }
                 }
             };
 
             // When
-            this.sut.SolveMove(moveOperation);
+            TestDelegate solveDelegate = () => this.sut.SolveMove(moveOperation);
 
             // Then
-            
+            Assert.DoesNotThrow(solveDelegate);
         }
     }
 }

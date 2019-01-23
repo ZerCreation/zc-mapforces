@@ -1,4 +1,5 @@
-﻿using ZerCreation.MapForcesEngine.AreaUnits;
+﻿using System.Linq;
+using ZerCreation.MapForcesEngine.AreaUnits;
 
 namespace ZerCreation.MapForcesEngine.Operations
 {
@@ -8,13 +9,24 @@ namespace ZerCreation.MapForcesEngine.Operations
         public Area AreaTarget { get; set; }
         public MoveMode Mode { get; set; }
 
-        public bool MoveIsFinished
+        public bool CheckIfMoveIsFinished()
         {
-            get
+            return (this.MovingArmy.PlayerPossesion.MovePoints == 0)
+                || (this.IsAllWholeArmyInTarget());
+        }
+
+        private bool IsAllWholeArmyInTarget()
+        {
+            foreach (MovingUnit armyUnit in this.MovingArmy.Units)
             {
-                return this.MovingArmy.PlayerPossesion.MovePoints == 0;
-                // TODO: Or check if units achieved target area
+                bool isInTarget = this.AreaTarget.Units.Any(areaUnit => armyUnit.Position == areaUnit.Position);
+                if (!isInTarget)
+                {
+                    return false;
+                }
             }
+
+            return true;
         }
     }
 }

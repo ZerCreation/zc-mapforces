@@ -1,20 +1,15 @@
 ﻿using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
-using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Arbiters
 {
     public class ArbiterDispatcher
     {
-        private readonly Cartographer cartographer;
         private List<IArbiter> arbiters;
 
-        public ArbiterDispatcher(Cartographer cartographer)
+        public ArbiterDispatcher()
         {
-            this.cartographer = cartographer;
-
             this.Initialize();
         }
 
@@ -34,7 +29,7 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             Army movingArmyBeforeMove = null; // movingArmy.Clone();
             Area areaTargetBeforeMove = null; // areaTarget.Clone();
 
-            while (!moveOperation.MoveIsFinished)
+            while (!moveOperation.CheckIfMoveIsFinished())
             {
                 foreach (IArbiter arbiter in arbiters)
                 {
@@ -47,11 +42,6 @@ namespace ZerCreation.MapForcesEngine.Arbiters
                     }
                 } 
             }
-
-            List<AreaUnit> newAreaTarget = null;
-            Player player = moveOperation.MovingArmy.PlayerPossesion;
-
-            this.cartographer.UpdateUnitPossesion(newAreaTarget, player);
         }
     }
 }

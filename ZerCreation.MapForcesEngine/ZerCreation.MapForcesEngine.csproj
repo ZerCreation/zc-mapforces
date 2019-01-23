@@ -55,11 +55,12 @@
     <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
+    <Compile Include="Controllers\MoveController.cs" />
     <Compile Include="Map\Coordinates.cs" />
     <Compile Include="Map\Vector.cs" />
     <Compile Include="Operations\MoveMode.cs" />
     <Compile Include="Operations\MoveOperation.cs" />
-    <Compile Include="Play\MoveController.cs" />
+    <Compile Include="Play\MoveService.cs" />
     <Compile Include="Play\Player.cs" />
     <Compile Include="Map\Cartographer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

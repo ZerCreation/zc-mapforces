@@ -7,6 +7,5 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
     {
         Coordinates Position { get; set; }
         int Value { get; set; }
-        Player PlayerPossesion { get; set; }
     }
 }
