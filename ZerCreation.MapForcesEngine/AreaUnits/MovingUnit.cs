@@ -6,5 +6,15 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
     {
         public Coordinates Position { get; set; }
         public int Value { get; set; }
+
+        public MovingUnit(int initX, int initY)
+            : this(new Coordinates(initX, initY))
+        {
+        }
+
+        public MovingUnit(Coordinates initPosition)
+        {
+            this.Position = initPosition;
+        }
     }
 }

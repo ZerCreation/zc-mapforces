@@ -11,9 +11,14 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
         public Player PlayerPossesion { get; set; }
         public AreaTypeBase Type { get; set; }
 
-        public AreaUnit()
+        public AreaUnit(int initX, int initY)
+            : this(new Coordinates(initX, initY))
         {
-            this.PlayerPossesion = null;
+        }
+
+        public AreaUnit(Coordinates initPosition)
+        {
+            this.Position = initPosition;
         }
     }
 }

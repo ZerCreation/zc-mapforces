@@ -32,20 +32,14 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
                     PlayerPossesion = Substitute.For<Player>(),
                     Units = new List<MovingUnit>
                     {
-                        new MovingUnit
-                        {
-                            Position = new Coordinates(10, 10)
-                        }
+                        new MovingUnit(10, 10)
                     }
                 },
                 AreaTarget = new Area
                 {
                     Units = new List<AreaUnit>
                     {
-                        new AreaUnit
-                        {
-                            Position = new Coordinates(20, 20)
-                        }
+                        new AreaUnit(20, 20)
                     }
                 }
             };

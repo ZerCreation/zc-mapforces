@@ -28,17 +28,11 @@ namespace ZerCreation.MapForcesEngine.Controllers
                 Mode = MoveMode.Basic,
                 MovingArmy = new Army
                 {
-                    Units = armyToMove.Select(unit => new MovingUnit
-                    {
-                        Position = new Map.Coordinates(unit.Item1, unit.Item2),
-                    }).ToList()
+                    Units = armyToMove.Select(unit => new MovingUnit(unit.Item1, unit.Item2)).ToList()
                 },
                 AreaTarget = new Area
                 {
-                    Units = moveTarget.Select(unit => new AreaUnit
-                    {
-                        Position = new Map.Coordinates(unit.Item1, unit.Item2),
-                    }).ToList()
+                    Units = moveTarget.Select(unit => new AreaUnit(unit.Item1, unit.Item2)).ToList()
                 }
             };
 
