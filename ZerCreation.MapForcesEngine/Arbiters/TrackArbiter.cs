@@ -9,7 +9,12 @@ namespace ZerCreation.MapForcesEngine.Arbiters
 {
     public class TrackArbiter : IArbiter
     {
-        private Queue<Coordinates> path;
+        private readonly Queue<Coordinates> path;
+
+        public TrackArbiter()
+        {
+            this.path = new Queue<Coordinates>();
+        }
 
         /// <summary>
         /// Checks if move of <paramref name="movingArmy"/> can be done or not
@@ -30,9 +35,9 @@ namespace ZerCreation.MapForcesEngine.Arbiters
             MovingUnit movingUnit = movingArmy.FetchNextUnit();
             AreaUnit areaUnit = areaTarget.FetchNextUnit();
             
-            Vector moveVector = areaUnit.Position - movingUnit.Position;
-            if (this.path == null)
+            if (!this.path.Any())
             {
+                Vector moveVector = areaUnit.Position - movingUnit.Position;
                 this.PreparePath(movingUnit.Position, areaUnit.Position, moveVector);
             }
 
@@ -45,16 +50,14 @@ namespace ZerCreation.MapForcesEngine.Arbiters
 
         private void PreparePath(Coordinates startPosition, Coordinates endPosition, Vector moveVector)
         {
-            this.path = new Queue<Coordinates>();
-
             // Calculates to get ratio less than 1
             bool isMoreHorizontalMove = Math.Abs(moveVector.X) > Math.Abs(moveVector.Y);
             double directionRatio = 0;
             if (moveVector.X != 0 && moveVector.Y != 0)
             {
                 directionRatio = isMoreHorizontalMove
-                    ? Math.Abs(moveVector.Y / moveVector.X)
-                    : Math.Abs(moveVector.X / moveVector.Y);
+                    ? Math.Abs((double)moveVector.Y / moveVector.X)
+                    : Math.Abs((double)moveVector.X / moveVector.Y);
             }
 
             Coordinates prevPosition = startPosition;
@@ -66,24 +69,31 @@ namespace ZerCreation.MapForcesEngine.Arbiters
                     X = prevPosition.X,
                     Y = prevPosition.Y
                 };
-                shorterDirBuffer += directionRatio;
 
                 if (isMoreHorizontalMove)
                 {
-                    newPosition.X += Math.Sign(moveVector.X);
                     if (shorterDirBuffer >= 1)
                     {
                         shorterDirBuffer--;
                         newPosition.Y += Math.Sign(moveVector.Y);
                     }
+                    else
+                    {
+                        newPosition.X += Math.Sign(moveVector.X);
+                        shorterDirBuffer += directionRatio;
+                    }
                 }
                 else
                 {
-                    newPosition.Y += Math.Sign(moveVector.Y);
                     if (shorterDirBuffer >= 1)
                     {
                         shorterDirBuffer--;
                         newPosition.X += Math.Sign(moveVector.X);
+                    }
+                    else
+                    {
+                        newPosition.Y += Math.Sign(moveVector.Y);
+                        shorterDirBuffer += directionRatio;
                     }
                 }
 
