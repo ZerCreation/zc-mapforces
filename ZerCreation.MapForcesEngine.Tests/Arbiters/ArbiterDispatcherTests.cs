@@ -32,44 +32,88 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
         public void Single_unit_should_reach_target_around_itself(int armyX, int armyY, int areaX, int areaY)
         {
             // Given
-            List<MovingUnit> armyUnits = new List<MovingUnit>
-            {
-                new MovingUnit
-                {
-                    Position = new Coordinates(armyX, armyY)
-                }
-            };
-
-            List<AreaUnit> areaUnits = new List<AreaUnit>
-            {
-                new AreaUnit
-                {
-                    Position = new Coordinates(areaX, areaY)
-                }
-            };
-
-            Player player = Substitute.For<Player>();
-            player.MovePoints = 100;
+            Army movingArmy = this.Given_CreateMovingArmy(new[] { new Coordinates(armyX, armyY) });
+            Area areaTarget = this.Given_CreateTargetArea(new[] { new Coordinates(areaX, areaY) });
 
             var moveOperation = new MoveOperation
             {
                 Mode = MoveMode.Basic,
-                MovingArmy = new Army()
-                {
-                    PlayerPossesion = player,
-                    Units = armyUnits
-                },
-                AreaTarget = new Area
-                {
-                    Units = areaUnits
-                }
+                MovingArmy = movingArmy,
+                AreaTarget = areaTarget
             };
 
             // When
             this.sut.SolveMove(moveOperation);
 
             // Then
-            Assert.AreEqual(areaUnits.Single().Position, armyUnits.Single().Position);
+            Assert.AreEqual(
+                areaTarget.Units.Single().Position,
+                movingArmy.Units.Single().Position);
+        }
+
+        [Test]
+        public void Single_unit_should_reach_five_moving_steps()
+        {
+            // Given
+            Army movingArmy = this.Given_CreateMovingArmy(new[] { new Coordinates(0, 0) }, playerMovePoints: 1000);
+
+            var pathSteps = new List<Area>
+            {
+                this.Given_CreateTargetArea(new[] { new Coordinates(10, 20) }),
+                this.Given_CreateTargetArea(new[] { new Coordinates(5, 30) }),
+                this.Given_CreateTargetArea(new[] { new Coordinates(40, 30) }),
+                this.Given_CreateTargetArea(new[] { new Coordinates(80, 25) }),
+                this.Given_CreateTargetArea(new[] { new Coordinates(100, 50) })
+            };
+
+            foreach (Area step in pathSteps)
+            {
+                var moveOperation = new MoveOperation
+                {
+                    Mode = MoveMode.Basic,
+                    MovingArmy = movingArmy,
+                    AreaTarget = step
+                };
+
+                // When
+                this.sut.SolveMove(moveOperation); 
+            }
+
+            // Then
+            AreaUnit finalAreaTarget = pathSteps.Last().Units.Single();
+            Assert.AreEqual(
+                finalAreaTarget.Position,
+                movingArmy.Units.Single().Position);
+        }
+
+        private Area Given_CreateTargetArea(IEnumerable<Coordinates> initPositions)
+        {
+            List<AreaUnit> units = initPositions
+                .Select(position => new AreaUnit(position))
+                .ToList();
+
+            return new Area
+            {
+                Units = units
+            };
+        }
+
+        private Army Given_CreateMovingArmy(IEnumerable<Coordinates> initPositions, int playerMovePoints = 100)
+        {
+            Player player = Substitute.For<Player>();
+            player.MovePoints = playerMovePoints;
+
+            List<MovingUnit> units = initPositions
+                .Select(position => new MovingUnit(position))
+                .ToList();
+
+            Army movingArmy = new Army
+            {
+                PlayerPossesion = player,
+                Units = units
+            };
+            
+            return movingArmy;
         }
     }
 }
