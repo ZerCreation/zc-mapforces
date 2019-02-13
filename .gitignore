@@ -1,3 +1,4 @@
 .vs/
-ZerCreation.MapForcesEngine.PrimarRunner/obj/
-ZerCreation.MapForcesEngine.PrimarRunner/bin/
+*/bin/*
+*/obj/*
+packages/
