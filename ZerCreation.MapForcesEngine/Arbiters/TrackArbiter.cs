@@ -26,7 +26,7 @@ namespace ZerCreation.MapForcesEngine.Arbiters
         {
             if (moveOperation.Mode != MoveMode.Basic)
             {
-                throw new NotSupportedException("Not Basic move operation is not supported yet.");
+                throw new NotSupportedException("Basic move operation is not supported yet.");
             }
 
             Army movingArmy = moveOperation.MovingArmy;
