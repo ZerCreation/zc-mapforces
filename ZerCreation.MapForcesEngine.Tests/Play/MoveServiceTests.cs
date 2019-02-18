@@ -2,23 +2,22 @@
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using ZerCreation.MapForcesEngine.Arbiters;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
 using ZerCreation.MapForcesEngine.Play;
 
-namespace ZerCreation.MapForcesEngine.Tests.Arbiters
+namespace ZerCreation.MapForcesEngine.Tests.Play
 {
     [TestFixture]
-    public class ArbiterDispatcherTests
+    public class MoveServiceTests
     {
-        private ArbiterDispatcher sut;
+        private MoveService sut;
 
         [SetUp]
         public void Init()
         {
-            this.sut = new ArbiterDispatcher();
+            this.sut = new MoveService(new TrackCreator(), new Cartographer());
         }
 
         [TestCase(20, 20, 20, 10)]
@@ -43,7 +42,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
             };
 
             // When
-            this.sut.SolveMove(moveOperation);
+            this.sut.Move(moveOperation);
 
             // Then
             Assert.AreEqual(
@@ -76,7 +75,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
                 };
 
                 // When
-                this.sut.SolveMove(moveOperation); 
+                this.sut.Move(moveOperation);
             }
 
             // Then
@@ -112,7 +111,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
                 PlayerPossesion = player,
                 Units = units
             };
-            
+
             return movingArmy;
         }
     }

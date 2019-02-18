@@ -62,8 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arbiters\ArbiterDispatcherTests.cs" />
-    <Compile Include="Arbiters\TrackArbiterTests.cs" />
+    <Compile Include="Map\TrackCreatorTests.cs" />
+    <Compile Include="Play\MoveServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

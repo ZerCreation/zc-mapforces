@@ -8,7 +8,7 @@ namespace ZerCreation.MapForcesEngine.Map
 {
     public class TrackCreator
     {
-        internal void SetupMovePaths(MoveOperation moveOperation)
+        public void SetupMovePaths(MoveOperation moveOperation)
         {
             if (moveOperation.Mode != MoveMode.Basic)
             {

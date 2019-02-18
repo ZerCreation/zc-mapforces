@@ -41,10 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arbiters\ArbiterDispatcher.cs" />
     <Compile Include="Arbiters\BattleArbiter.cs" />
     <Compile Include="Arbiters\DiplomacyArbiter.cs" />
-    <Compile Include="Arbiters\TrackArbiter.cs" />
     <Compile Include="AreaUnits\Area.cs" />
     <Compile Include="AreaUnits\IUnit.cs" />
     <Compile Include="AreaUnits\MovingUnit.cs" />

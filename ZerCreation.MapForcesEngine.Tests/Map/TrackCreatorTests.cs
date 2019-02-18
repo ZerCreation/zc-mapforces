@@ -1,23 +1,21 @@
 ﻿using NSubstitute;
 using NUnit.Framework;
 using System.Collections.Generic;
-using ZerCreation.MapForcesEngine.Arbiters;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
 using ZerCreation.MapForcesEngine.Play;
 
-namespace ZerCreation.MapForcesEngine.Tests.Arbiters
+namespace ZerCreation.MapForcesEngine.Tests.Map
 {
-    [TestFixture]
-    public class TrackArbiterTests
+    public class TrackCreatorTests
     {
-        private TrackArbiter sut;
+        private TrackCreator sut;
 
         [SetUp]
         public void Init()
         {
-            this.sut = new TrackArbiter();
+            this.sut = new TrackCreator();
         }
 
         [Test]
@@ -45,7 +43,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Arbiters
             };
 
             // When
-            TestDelegate solveDelegate = () => this.sut.SolveMove(moveOperation);
+            TestDelegate solveDelegate = () => this.sut.SetupMovePaths(moveOperation);
 
             // Then
             Assert.DoesNotThrow(solveDelegate);
