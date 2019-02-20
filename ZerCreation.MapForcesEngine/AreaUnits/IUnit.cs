@@ -6,6 +6,6 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
     interface IUnit
     {
         Coordinates Position { get; set; }
-        int Value { get; set; }
+        int Force { get; set; }
     }
 }

@@ -24,13 +24,20 @@ namespace ZerCreation.MapForcesEngine.Map
                     "For Basic move operation it must be the same.");
             }
 
+            // TODO: Improve it - use for() loop for Basic mode
+            int idx = 0;
             foreach (MovingUnit movingUnit in movingArmy.Units)
             {
                 //MovingUnit movingUnit = movingArmy.FetchNextUnit();
-                AreaUnit areaUnit = areaTarget.FetchNextUnit();
+                AreaUnit areaUnit = areaTarget.Units[idx++];
 
                 Queue<Coordinates> movePath = this.PreparePath(movingUnit.Position, areaUnit.Position);
-                movingUnit.AssignMovePath(movePath);
+                if (movePath.Last() != areaUnit.Position)
+                {
+                    throw new Exception("Generated move path doesn't contain right target.");
+                }
+
+                movingUnit.SetupMove(movePath);
             }
         }
 

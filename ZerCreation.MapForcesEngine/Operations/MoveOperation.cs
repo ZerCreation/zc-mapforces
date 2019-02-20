@@ -11,22 +11,8 @@ namespace ZerCreation.MapForcesEngine.Operations
 
         public bool CheckIfMoveIsFinished()
         {
-            return (this.MovingArmy.PlayerPossesion.MovePoints == 0)
-                || (this.IsAllWholeArmyInTarget());
-        }
-
-        private bool IsAllWholeArmyInTarget()
-        {
-            foreach (MovingUnit armyUnit in this.MovingArmy.Units)
-            {
-                bool isInTarget = this.AreaTarget.Units.Any(areaUnit => armyUnit.Position == areaUnit.Position);
-                if (!isInTarget)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return this.MovingArmy.PlayerPossesion.MovePoints == 0
+                || this.MovingArmy.Units.All(unit => unit.IsMoveTargetReached);
         }
     }
 }

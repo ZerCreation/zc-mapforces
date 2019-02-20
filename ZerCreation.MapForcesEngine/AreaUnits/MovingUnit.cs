@@ -8,9 +8,17 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
     public class MovingUnit : IUnit
     {
         private Queue<Coordinates> movePath;
+        private Coordinates pathTarget;
 
         public Coordinates Position { get; set; }
-        public int Value { get; set; }
+        public int Force { get; set; }
+        public bool IsMoveTargetReached
+        {
+            get
+            {
+                return this.Position == this.pathTarget;
+            }
+        }
 
         public MovingUnit(int initX, int initY)
             : this(new Coordinates(initX, initY))
@@ -23,9 +31,10 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
             this.movePath = new Queue<Coordinates>();
         }
 
-        internal void AssignMovePath(Queue<Coordinates> movePath)
+        internal void SetupMove(Queue<Coordinates> movePath)
         {
             this.movePath = movePath;
+            this.pathTarget = movePath.Last();
         }
 
         internal void MoveToNextPathPoint()
@@ -37,6 +46,11 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
 
             Coordinates pointToMove = this.movePath.Dequeue();
             this.Position = pointToMove;
+        }
+
+        public override string ToString()
+        {
+            return $"Position: {this.Position}, Force: {this.Force}";
         }
     }
 }
