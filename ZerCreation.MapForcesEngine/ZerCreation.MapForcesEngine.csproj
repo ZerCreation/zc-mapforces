@@ -55,6 +55,7 @@
     <Compile Include="Arbiters\GeographyArbiter.cs" />
     <Compile Include="Controllers\MoveController.cs" />
     <Compile Include="Map\Coordinates.cs" />
+    <Compile Include="Map\ICartographer.cs" />
     <Compile Include="Map\TrackCreator.cs" />
     <Compile Include="Map\Vector.cs" />
     <Compile Include="Operations\MoveMode.cs" />

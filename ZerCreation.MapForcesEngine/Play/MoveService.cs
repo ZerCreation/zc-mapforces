@@ -7,9 +7,9 @@ namespace ZerCreation.MapForcesEngine.Play
     public class MoveService
     {
         private readonly TrackCreator trackCreator;
-        private readonly Cartographer cartographer;
+        private readonly ICartographer cartographer;
 
-        public MoveService(TrackCreator trackCreator, Cartographer cartographer)
+        public MoveService(TrackCreator trackCreator, ICartographer cartographer)
         {
             this.trackCreator = trackCreator;
             this.cartographer = cartographer;
@@ -21,6 +21,7 @@ namespace ZerCreation.MapForcesEngine.Play
             // TODO: Check cartographer to assign Army.Units.Value
 
             this.trackCreator.SetupMovePaths(moveOperation);
+
             while (!moveOperation.CheckIfMoveIsFinished())
             {
                 Army movingArmy = moveOperation.MovingArmy;
@@ -28,16 +29,15 @@ namespace ZerCreation.MapForcesEngine.Play
                 {
                     unit.MoveToNextPathPoint();
                     movingArmy.PlayerPossesion.MovePoints--;
+
+                    AreaUnit areaUnit = this.cartographer.FindAreaUnit(unit.Position);
                     // call DiplomacyArbiter for each unit here
                     // call BattleArbiter for each unit here
 
-                    // update area possesion after each move
+                    // update area possession if needed
+                    areaUnit.PlayerPossesion = movingArmy.PlayerPossesion;
                 }
             }
-
-            this.cartographer.UpdateUnitPossesion(
-                moveOperation.AreaTarget.Units, 
-                moveOperation.MovingArmy.PlayerPossesion);
         }
 }
 }

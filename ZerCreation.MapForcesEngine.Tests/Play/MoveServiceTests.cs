@@ -22,7 +22,10 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
         public void Init()
         {
             this.fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
-            this.sut = new MoveService(new TrackCreator(), new Cartographer());
+            var cartographer = this.fixture.Create<ICartographer>();
+            cartographer.FindAreaUnit(Arg.Any<Coordinates>()).Returns(new AreaUnit(0, 0));
+
+            this.sut = new MoveService(new TrackCreator(), cartographer);
         }
 
         [TestCase(20, 20, 20, 10)]

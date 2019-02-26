@@ -1,16 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Map
 {
-    public class Cartographer
+    public class Cartographer : ICartographer
     {
-        public List<AreaUnit> MapUnits { get; set; }
+        private readonly List<AreaUnit> mapUnits;
 
-        public void UpdateUnitPossesion(List<AreaUnit> mapUnits, Player player)
+        public Cartographer(List<AreaUnit> mapUnits)
         {
-            mapUnits.ForEach(unit => unit.PlayerPossesion = player);
+            this.mapUnits = mapUnits;
+        }
+
+        public AreaUnit FindAreaUnit(Coordinates position)
+        {
+            return this.mapUnits.Single(mapUnit => mapUnit.Position == position);
         }
     }
 }
