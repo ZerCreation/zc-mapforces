@@ -10,26 +10,33 @@ namespace ZerCreation.MapForcesEngine.Map
     {
         public void SetupMovePaths(MoveOperation moveOperation)
         {
-            if (moveOperation.Mode != MoveMode.Basic)
+            switch (moveOperation.Mode)
             {
-                throw new NotSupportedException("Basic move operation is not supported yet.");
+                case MoveMode.Basic:
+                    // TODO: Use strategy pattern here
+                    this.SetupBasicMovePaths(moveOperation);
+                    break;
+                default:
+                    throw new NotSupportedException($"{moveOperation.Mode} isn't currently supported.");
             }
+        }
 
+        private void SetupBasicMovePaths(MoveOperation moveOperation)
+        {
             Army movingArmy = moveOperation.MovingArmy;
             Area areaTarget = moveOperation.AreaTarget;
 
-            if (moveOperation.Mode != MoveMode.Basic && movingArmy.Units.Count != areaTarget.Units.Count)
+            if (movingArmy.Units.Count != areaTarget.Units.Count)
             {
-                throw new ArgumentException("The number of army units differs from number of area units." +
+                throw new ArgumentException("The number of army units differs from number of area units. " +
                     "For Basic move operation it must be the same.");
             }
 
-            // TODO: Improve it - use for() loop for Basic mode
-            int idx = 0;
-            foreach (MovingUnit movingUnit in movingArmy.Units)
+            int unitsCount = movingArmy.Units.Count;
+            for (int i = 0; i < unitsCount; i++)
             {
-                //MovingUnit movingUnit = movingArmy.FetchNextUnit();
-                AreaUnit areaUnit = areaTarget.Units[idx++];
+                MovingUnit movingUnit = movingArmy.Units[i];
+                AreaUnit areaUnit = areaTarget.Units[i];
 
                 Queue<Coordinates> movePath = this.PreparePath(movingUnit.Position, areaUnit.Position);
                 if (movePath.Last() != areaUnit.Position)
