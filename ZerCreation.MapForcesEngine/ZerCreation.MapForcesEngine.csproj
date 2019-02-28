@@ -53,16 +53,17 @@
     <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
-    <Compile Include="Controllers\MoveController.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="Map\Coordinates.cs" />
-    <Compile Include="Map\ICartographer.cs" />
+    <Compile Include="Map\Cartographer\ICartographer.cs" />
+    <Compile Include="Map\MapSettings.cs" />
     <Compile Include="Map\TrackCreator.cs" />
     <Compile Include="Map\Vector.cs" />
     <Compile Include="Operations\MoveMode.cs" />
     <Compile Include="Operations\MoveOperation.cs" />
     <Compile Include="Play\MoveService.cs" />
     <Compile Include="Play\Player.cs" />
-    <Compile Include="Map\Cartographer.cs" />
+    <Compile Include="Map\Cartographer\PlainCartographer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AreaUnits\AreaUnit.cs" />
   </ItemGroup>

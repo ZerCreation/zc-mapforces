@@ -1,10 +1,10 @@
 ﻿using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Play;
 
-namespace ZerCreation.MapForcesEngine.Map
+namespace ZerCreation.MapForcesEngine.Map.Cartographer
 {
     public interface ICartographer
     {
         AreaUnit FindAreaUnit(Coordinates position);
+        void DrawMap(MapSettings mapSettings);
     }
 }
