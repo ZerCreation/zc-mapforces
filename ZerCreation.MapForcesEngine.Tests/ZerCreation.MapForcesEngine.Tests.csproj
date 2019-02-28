@@ -40,6 +40,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoFixture, Version=4.8.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.4.8.0\lib\net452\AutoFixture.dll</HintPath>
+    </Reference>
+    <Reference Include="AutoFixture.AutoNSubstitute, Version=4.8.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoFixture.AutoNSubstitute.4.8.0\lib\net452\AutoFixture.AutoNSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.2.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
@@ -62,8 +68,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arbiters\ArbiterDispatcherTests.cs" />
-    <Compile Include="Arbiters\TrackArbiterTests.cs" />
+    <Compile Include="Map\TrackCreatorTests.cs" />
+    <Compile Include="Play\MoveServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -73,6 +79,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

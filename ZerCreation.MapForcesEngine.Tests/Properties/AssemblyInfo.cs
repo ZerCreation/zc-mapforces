@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ZerCreation.MapForcesEngine.Tests")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Zer Creation")]
 [assembly: AssemblyProduct("ZerCreation.MapForcesEngine.Tests")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]

@@ -1,4 +1,4 @@
-﻿using ZerCreation.MapForcesEngine.Arbiters;
+﻿using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Operations;
 
@@ -6,12 +6,12 @@ namespace ZerCreation.MapForcesEngine.Play
 {
     public class MoveService
     {
-        private readonly ArbiterDispatcher arbiterDispatcher;
-        private readonly Cartographer cartographer;
+        private readonly TrackCreator trackCreator;
+        private readonly ICartographer cartographer;
 
-        public MoveService(ArbiterDispatcher arbiterDispatcher, Cartographer cartographer)
+        public MoveService(TrackCreator trackCreator, ICartographer cartographer)
         {
-            this.arbiterDispatcher = arbiterDispatcher;
+            this.trackCreator = trackCreator;
             this.cartographer = cartographer;
         }
 
@@ -20,11 +20,24 @@ namespace ZerCreation.MapForcesEngine.Play
             // TODO: Check cartographer to assign Army.PlayerPosession
             // TODO: Check cartographer to assign Army.Units.Value
 
-            this.arbiterDispatcher.SolveMove(moveOperation);
+            this.trackCreator.SetupMovePaths(moveOperation);
 
-            this.cartographer.UpdateUnitPossesion(
-                moveOperation.AreaTarget.Units, 
-                moveOperation.MovingArmy.PlayerPossesion);
+            while (!moveOperation.CheckIfMoveIsFinished())
+            {
+                Army movingArmy = moveOperation.MovingArmy;
+                foreach (MovingUnit unit in movingArmy.Units)
+                {
+                    unit.MoveToNextPathPoint();
+                    movingArmy.PlayerPossesion.MovePoints--;
+
+                    AreaUnit areaUnit = this.cartographer.FindAreaUnit(unit.Position);
+                    // call DiplomacyArbiter for each unit here
+                    // call BattleArbiter for each unit here
+
+                    // update area possession if needed
+                    areaUnit.PlayerPossesion = movingArmy.PlayerPossesion;
+                }
+            }
         }
 }
 }

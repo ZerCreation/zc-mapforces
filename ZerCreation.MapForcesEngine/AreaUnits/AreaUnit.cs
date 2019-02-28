@@ -7,7 +7,6 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
     public class AreaUnit : IUnit
     {
         public Coordinates Position { get; set; }
-        public int Value { get; set; }
         public Player PlayerPossesion { get; set; }
         public AreaTypeBase Type { get; set; }
 
@@ -19,6 +18,11 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
         public AreaUnit(Coordinates initPosition)
         {
             this.Position = initPosition;
+        }
+
+        public override string ToString()
+        {
+            return $"Position: {this.Position}";
         }
     }
 }
