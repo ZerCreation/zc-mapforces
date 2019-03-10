@@ -8,6 +8,11 @@ namespace ZerCreation.MapForces.WebApi.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        public ValuesController(MoveController moveController)
+        {
+
+        }
+
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
