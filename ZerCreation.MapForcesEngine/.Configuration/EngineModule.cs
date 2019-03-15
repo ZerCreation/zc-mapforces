@@ -1,6 +1,6 @@
 ﻿using Autofac;
-using ZerCreation.MapForcesEngine.Controllers;
 using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Configuration
@@ -11,9 +11,9 @@ namespace ZerCreation.MapForcesEngine.Configuration
         {
             base.Load(builder);
 
-            builder.RegisterType<Cartographer>().As<ICartographer>();
+            builder.RegisterType<PlainCartographer>().As<ICartographer>();
             builder.RegisterType<MoveService>();
-            builder.RegisterType<MoveController>();
+            builder.RegisterType<EngineDispatcher>();
             builder.RegisterType<TrackCreator>();
         }
     }

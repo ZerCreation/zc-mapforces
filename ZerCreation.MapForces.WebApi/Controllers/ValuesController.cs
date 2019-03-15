@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using ZerCreation.MapForcesEngine.Controllers;
+using ZerCreation.MapForcesEngine;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
 {
@@ -8,7 +8,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
-        public ValuesController(MoveController moveController)
+        public ValuesController(EngineDispatcher engineDispatcher)
         {
 
         }
