@@ -53,7 +53,7 @@
     <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
-    <Compile Include="GameController.cs" />
+    <Compile Include="EngineDispatcher.cs" />
     <Compile Include="Map\Coordinates.cs" />
     <Compile Include="Map\Cartographer\ICartographer.cs" />
     <Compile Include="Map\MapSettings.cs" />

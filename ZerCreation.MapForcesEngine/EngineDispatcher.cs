@@ -12,24 +12,24 @@ namespace ZerCreation.MapForcesEngine
     /// <summary>
     /// Entry point for game control from external front library
     /// </summary>
-    public class GameController
+    public class EngineDispatcher
     {
         private readonly MoveService moveService;
         private readonly ICartographer cartographer;
 
-        public GameController(MoveService moveService, ICartographer cartographer)
+        public EngineDispatcher(MoveService moveService, ICartographer cartographer)
         {
             this.moveService = moveService;
             // Cartographer must be singleton
             this.cartographer = cartographer;
         }
 
-        public void BuildMap(int width, int height)
+        public void BuildMap(string mapName)
         {
             var mapSettings = new MapSettings
             {
-                Width = width,
-                Height = height
+                Width = 1000,
+                Height = 800
             };
 
             this.cartographer.DrawMap(mapSettings);
