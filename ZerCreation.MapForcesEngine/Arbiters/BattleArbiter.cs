@@ -1,5 +1,4 @@
 ﻿using System;
-using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Operations;
 
 namespace ZerCreation.MapForcesEngine.Arbiters
