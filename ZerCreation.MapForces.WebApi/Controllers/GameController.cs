@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForcesEngine;
 
@@ -22,11 +23,31 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         }
 
         [HttpPost("init")]
-        public ActionResult<string> Initialize([FromBody] GameInitDto gameInitDto)
+        public ActionResult<GameDescriptionDto> Initialize([FromBody] GameInitDto gameInitDto)
         {
             this.engineDispatcher.BuildMap(gameInitDto.MapName);
 
-            return "Game was created.";
+            return this.Ok(null);
+        }
+
+        [HttpPost("join")]
+        public ActionResult<GameDescriptionDto> JoinToGame()
+        {
+            var gameDescription = new GameDescriptionDto
+            {
+                MapWidth = 100,
+                MapHeight = 80,
+                Terrain = new List<TerrainUnitDto>
+                {
+                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 5, Y = 5 },
+                    new TerrainUnitDto { Type = TerrainTypeDto.Water, X = 15, Y = 5 },
+                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 25, Y = 6 },
+                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 35, Y = 6 },
+                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 45, Y = 7 },
+                }
+            };
+
+            return this.Ok(gameDescription);
         }
     }
 }

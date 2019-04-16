@@ -28,8 +28,8 @@ namespace ZerCreation.MapForcesEngine
         {
             var mapSettings = new MapSettings
             {
-                Width = 1000,
-                Height = 800
+                Width = 80,
+                Height = 80
             };
 
             this.cartographer.DrawMap(mapSettings);
