@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
-import { GameDescription } from 'src/app/models/game-description';
+import { GamePlayDetails } from 'src/app/models/game-play-details';
+import { MapUnit } from 'src/app/models/map-unit';
 
 @Component({
   selector: 'app-game-board',
@@ -11,8 +12,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
   private htmlCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private mapWidth: number;
-  private mapHeight: number;
+
+  private unitSize = 9;
+  private unitSizeWithMargin = this.unitSize + 1;
 
   constructor(private httpService: HttpService) {}
 
@@ -20,32 +22,34 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
 
     this.httpService.joinToGame()
-      .subscribe((data: GameDescription) => {
-        this.mapWidth = data.mapWidth;
-        this.mapHeight = data.mapHeight;
-
-        this.draw();
+      .subscribe((data: GamePlayDetails) => {
+        this.drawBackground(data.mapWidth, data.mapHeight);
+        this.drawMap(data.units);
       });
   }
 
   ngAfterViewInit() {
     this.context = this.htmlCanvas.getContext('2d');
-  
   }
 
-  private draw() {
-    const unitSize = 9;
-    const unitSizeWithMargin = unitSize + 1;
-    
-    this.htmlCanvas.width = this.mapWidth * unitSizeWithMargin;
-    this.htmlCanvas.height = this.mapHeight * unitSizeWithMargin;
+  private drawBackground(width: number, height: number) {   
+    this.htmlCanvas.width = width * this.unitSizeWithMargin - 1;
+    this.htmlCanvas.height = height * this.unitSizeWithMargin - 1;
 
-    this.context.fillStyle = 'green';
+    this.context.fillStyle = 'lightgray';
 
-    for (let x = 0; x < this.htmlCanvas.width; x += unitSizeWithMargin) {
-      for (let y = 0; y < this.htmlCanvas.height; y += unitSizeWithMargin) {
-        this.context.fillRect(x, y, unitSize, unitSize);
+    for (let x = 0; x < this.htmlCanvas.width; x += this.unitSizeWithMargin) {
+      for (let y = 0; y < this.htmlCanvas.height; y += this.unitSizeWithMargin) {
+        this.context.fillRect(x, y, this.unitSize, this.unitSize);
       }
     }
+  }
+
+  drawMap(units: MapUnit[]) {
+    
+    units.forEach(unit => {
+      this.context.fillStyle = unit.terrainType == 'Earth' ? 'green' : 'blue';
+      this.context.fillRect(this.unitSizeWithMargin * unit.x, this.unitSizeWithMargin * unit.y, this.unitSize, this.unitSize);
+    });
   }
 }

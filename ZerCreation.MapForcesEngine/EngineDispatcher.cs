@@ -24,7 +24,7 @@ namespace ZerCreation.MapForcesEngine
             this.cartographer = cartographer;
         }
 
-        public void BuildMap(string mapName)
+        public void BuildMap()
         {
             var mapSettings = new MapSettings
             {

@@ -1,4 +1,4 @@
-﻿namespace ZerCreation.MapForces.WebApi
+﻿namespace ZerCreation.MapForces.WebApi.Dtos
 {
     public enum TerrainTypeDto
     {

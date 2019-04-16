@@ -23,27 +23,30 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         }
 
         [HttpPost("init")]
-        public ActionResult<GameDescriptionDto> Initialize([FromBody] GameInitDto gameInitDto)
+        public ActionResult<GamePlayDetails> Initialize([FromBody] GameInitDto gameInitDto)
         {
-            this.engineDispatcher.BuildMap(gameInitDto.MapName);
-
-            return this.Ok(null);
+            return this.Ok(gameInitDto.MapName);
         }
 
         [HttpPost("join")]
-        public ActionResult<GameDescriptionDto> JoinToGame()
+        public ActionResult<GamePlayDetails> JoinToGame()
         {
-            var gameDescription = new GameDescriptionDto
+            // Find existing game
+            // If not then create a new one
+            // At the moment always create a new one
+            this.engineDispatcher.BuildMap();
+
+            var gameDescription = new GamePlayDetails
             {
                 MapWidth = 100,
                 MapHeight = 80,
-                Terrain = new List<TerrainUnitDto>
+                Units = new List<MapUnitDto>
                 {
-                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 5, Y = 5 },
-                    new TerrainUnitDto { Type = TerrainTypeDto.Water, X = 15, Y = 5 },
-                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 25, Y = 6 },
-                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 35, Y = 6 },
-                    new TerrainUnitDto { Type = TerrainTypeDto.Earth, X = 45, Y = 7 },
+                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 5, Y = 5 },
+                    new MapUnitDto { TerrainType = TerrainTypeDto.Water, X = 15, Y = 5 },
+                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 25, Y = 6 },
+                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 35, Y = 6 },
+                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 45, Y = 7 },
                 }
             };
 
