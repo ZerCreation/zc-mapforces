@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using ZerCreation.MapForces.MapCreator.Models;
+using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Map;
 
 namespace ZerCreation.MapForces.MapCreator.Parsers
 {
     public class AmChartsParser : IParser
     {
-        public Map ParseToMap(string input)
+        public MapDescription ParseToMap(string input)
         {
             var jsonRegex = new Regex(@"\""images\"": (?<jsonArray>(\[[^\]]*)])");
             Match match = jsonRegex.Match(input);
@@ -32,21 +33,11 @@ namespace ZerCreation.MapForces.MapCreator.Parsers
 
             Tuple<decimal, decimal>[] transformedPoints = this.CalculateToIntegerBased(points);
 
-            IEnumerable<Point> mapPoints = transformedPoints
-                .Select(tPoint => new Point
-                {
-                    X = (int)tPoint.Item1,
-                    Y = (int)tPoint.Item2
-                });
-
-            return new Map
+            return new MapDescription
             {
-                Points = transformedPoints.Select(tPoint => 
-                    new Point
-                    {
-                        X = (int)tPoint.Item1,
-                        Y = (int)tPoint.Item2
-                    }).ToList()
+                AreaUnits = transformedPoints
+                    .Select(tPoint => new AreaUnit((int)tPoint.Item1, (int)tPoint.Item2))
+                    .ToList()
             };
         }
 

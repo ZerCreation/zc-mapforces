@@ -2,8 +2,8 @@
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using ZerCreation.MapForces.MapCreator.Models;
 using ZerCreation.MapForces.MapCreator.Parsers;
+using ZerCreation.MapForcesEngine.Map;
 
 namespace ZerCreation.MapForces.MapCreator
 {
@@ -20,19 +20,19 @@ namespace ZerCreation.MapForces.MapCreator
 
         internal void Run()
         {
-            Map map = Parse();
+            MapDescription map = Parse();
 
             this.Save(map);
 
             this.Verify(formatter);
         }
 
-        private Map Parse()
+        private MapDescription Parse()
         {
             try
             {
                 string mapText = File.ReadAllText(@"C:\Zer Creation\Projects\Map Forces\Maps\amCharts.pixelMapLight.html");
-                Map map = this.parser.ParseToMap(mapText);
+                MapDescription map = this.parser.ParseToMap(mapText);
 
                 return map;
             }
@@ -42,7 +42,7 @@ namespace ZerCreation.MapForces.MapCreator
             }
         }
 
-        private void Save(Map map)
+        private void Save(MapDescription map)
         {
             using (Stream stream = new FileStream("map.mfm", FileMode.Create, FileAccess.Write))
             {
@@ -52,8 +52,10 @@ namespace ZerCreation.MapForces.MapCreator
 
         private void Verify(IFormatter formatter)
         {
-            var streamToValidate = new FileStream("map.mfm", FileMode.Open, FileAccess.Read);
-            var readMap = (Map)this.formatter.Deserialize(streamToValidate);
+            using (var streamToValidate = new FileStream("map.mfm", FileMode.Open, FileAccess.Read))
+            {
+                var readMap = (MapDescription)this.formatter.Deserialize(streamToValidate);
+            }
         }
     }
 }

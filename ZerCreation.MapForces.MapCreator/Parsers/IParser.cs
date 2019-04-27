@@ -1,9 +1,9 @@
-﻿using ZerCreation.MapForces.MapCreator.Models;
+﻿using ZerCreation.MapForcesEngine.Map;
 
 namespace ZerCreation.MapForces.MapCreator.Parsers
 {
     interface IParser
     {
-        Map ParseToMap(string input);
+        MapDescription ParseToMap(string input);
     }
 }

@@ -48,5 +48,13 @@ namespace ZerCreation.MapForcesEngine.Map
         {
             return $"X: {this.X}, Y: {this.Y}";
         }
+
+        public override int GetHashCode()
+        {
+            var hashCode = 1861411795;
+            hashCode = hashCode * -1521134295 + X.GetHashCode();
+            hashCode = hashCode * -1521134295 + Y.GetHashCode();
+            return hashCode;
+        }
     }
 }
