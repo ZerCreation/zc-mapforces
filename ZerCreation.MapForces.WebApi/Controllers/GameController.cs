@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Linq;
 using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForcesEngine;
+using ZerCreation.MapForcesEngine.Map;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
 {
@@ -23,31 +25,30 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         }
 
         [HttpPost("init")]
-        public ActionResult<GamePlayDetails> Initialize([FromBody] GameInitDto gameInitDto)
+        public ActionResult<GamePlayDetailsDto> Initialize([FromBody] GameInitDto gameInitDto)
         {
             return this.Ok(gameInitDto.MapName);
         }
 
         [HttpPost("join")]
-        public ActionResult<GamePlayDetails> JoinToGame()
+        public ActionResult<GamePlayDetailsDto> JoinToGame()
         {
             // Find existing game
             // If not then create a new one
             // At the moment always create a new one
-            this.engineDispatcher.BuildMap();
+            MapDescription mapDescription = this.engineDispatcher.BuildMap();
 
-            var gameDescription = new GamePlayDetails
+            var gameDescription = new GamePlayDetailsDto
             {
                 MapWidth = 100,
                 MapHeight = 80,
-                Units = new List<MapUnitDto>
-                {
-                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 5, Y = 5 },
-                    new MapUnitDto { TerrainType = TerrainTypeDto.Water, X = 15, Y = 5 },
-                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 25, Y = 6 },
-                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 35, Y = 6 },
-                    new MapUnitDto { TerrainType = TerrainTypeDto.Earth, X = 45, Y = 7 },
-                }
+                Units = mapDescription.AreaUnits.Select(unit => 
+                    new MapUnitDto
+                    {
+                        TerrainType = TerrainTypeDto.Earth,
+                        X = unit.Position.X,
+                        Y = unit.Position.Y
+                    })
             };
 
             return this.Ok(gameDescription);

@@ -2,7 +2,7 @@
 
 namespace ZerCreation.MapForces.WebApi.Dtos
 {
-    public class GamePlayDetails
+    public class GamePlayDetailsDto
     {
         public int MapWidth { get; set; }
         public int MapHeight { get; set; }

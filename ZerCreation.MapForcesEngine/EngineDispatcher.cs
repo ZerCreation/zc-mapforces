@@ -16,23 +16,23 @@ namespace ZerCreation.MapForcesEngine
     {
         private readonly MoveService moveService;
         private readonly ICartographer cartographer;
+        private readonly MapBuilder mapCreator;
 
-        public EngineDispatcher(MoveService moveService, ICartographer cartographer)
+        public EngineDispatcher(MoveService moveService, ICartographer cartographer, MapBuilder mapCreator)
         {
             this.moveService = moveService;
             // Cartographer must be singleton
             this.cartographer = cartographer;
+            this.mapCreator = mapCreator;
         }
 
-        public void BuildMap()
+        public MapDescription BuildMap()
         {
-            var mapSettings = new MapSettings
-            {
-                Width = 80,
-                Height = 80
-            };
+            MapDescription builtMap = this.mapCreator.BuildFromFile();
 
-            this.cartographer.DrawMap(mapSettings);
+            this.cartographer.DrawMap(builtMap);
+
+            return builtMap;
         }
 
         public void InitializePlayers()
