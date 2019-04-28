@@ -31,7 +31,7 @@ namespace ZerCreation.MapForces.MapCreator
         {
             try
             {
-                string mapText = File.ReadAllText(@"C:\Zer Creation\Projects\Map Forces\Maps\amCharts.pixelMapLight.html");
+                string mapText = File.ReadAllText(@"C:\Zer Creation\Projects\Map Forces\Maps\amCharts.pixelMap.html");
                 MapDescription map = this.parser.ParseToMap(mapText);
 
                 return map;

@@ -48,13 +48,16 @@ namespace ZerCreation.MapForces.MapCreator.Parsers
             Tuple<decimal, decimal>[] sortedPointsByY = amPoints.OrderBy(point => point.Item2).ToArray();
             decimal prevY = sortedPointsByY.First().Item2;
             int pointYValue = 0;
+            decimal minTypicalDiff = decimal.MaxValue;
 
             for (int i = 0; i < sortedPointsByY.Length; i++)
             {
                 decimal diff = sortedPointsByY[i].Item2 - prevY;
                 if (diff > 0)
                 {
-                    pointYValue++;
+                    minTypicalDiff = Math.Min(diff, minTypicalDiff);
+                    int diffScale = (int)(diff / minTypicalDiff);
+                    pointYValue += diffScale;
                 }
 
                 prevY = sortedPointsByY[i].Item2;
@@ -65,13 +68,16 @@ namespace ZerCreation.MapForces.MapCreator.Parsers
             Tuple<decimal, decimal>[] sortedPointsByX = sortedPointsByY.OrderBy(point => point.Item1).ToArray();
             decimal prevX = sortedPointsByX.First().Item1;
             int pointXValue = 0;
+            minTypicalDiff = decimal.MaxValue;
 
             for (int i = 0; i < sortedPointsByX.Length; i++)
             {
                 decimal diff = sortedPointsByX[i].Item1 - prevX;
                 if (diff > 0)
                 {
-                    pointXValue++;
+                    minTypicalDiff = Math.Min(diff, minTypicalDiff);
+                    int diffScale = (int)(diff / minTypicalDiff);
+                    pointXValue += diffScale;
                 }
 
                 prevX = sortedPointsByX[i].Item1;
