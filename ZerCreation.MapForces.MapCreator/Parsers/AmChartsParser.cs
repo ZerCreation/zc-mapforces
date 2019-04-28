@@ -28,14 +28,16 @@ namespace ZerCreation.MapForces.MapCreator.Parsers
                 decimal longitude = decimal.Parse(Convert.ToString(item["longitude"]));
                 decimal latitude = decimal.Parse(Convert.ToString(item["latitude"]));
                 points.Add(new Tuple<decimal, decimal>(longitude, latitude));
-
             }
 
             Tuple<decimal, decimal>[] transformedPoints = this.CalculateToIntegerBased(points);
+            this.RevertHorizontally(transformedPoints);
 
             return new MapDescription
             {
                 AreaUnits = transformedPoints
+                    .OrderBy(tPoint => tPoint.Item1)
+                    .ThenBy(tPoint => tPoint.Item2)
                     .Select(tPoint => new AreaUnit((int)tPoint.Item1, (int)tPoint.Item2))
                     .ToList()
             };
@@ -77,6 +79,17 @@ namespace ZerCreation.MapForces.MapCreator.Parsers
             }
 
             return sortedPointsByX.OrderBy(point => point.Item2).ToArray();
+        }
+
+        private void RevertHorizontally(Tuple<decimal, decimal>[] transformedPoints)
+        {
+            decimal maxVertPoint = transformedPoints.Max(tPoint => tPoint.Item2);
+
+            for (int i = 0; i < transformedPoints.Length; i++)
+            {
+                var newVertValue = Math.Abs(transformedPoints[i].Item2 - maxVertPoint);
+                transformedPoints[i] = new Tuple<decimal, decimal>(transformedPoints[i].Item1, newVertValue);
+            }
         }
     }
 }
