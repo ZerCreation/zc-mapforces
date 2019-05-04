@@ -55,8 +55,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     const mouseY = (event.clientY - canvasRectangle.top);
 
     var selectedUnit: MapViewUnit = this.mapService.units.find(unit => 
-      (mouseX >= unit.x && mouseX <= unit.x + this.mapService.unitSize) &&
-      (mouseY >= unit.y && mouseY <= unit.y + this.mapService.unitSize));
+      (mouseX >= unit.x && mouseX <= unit.x + this.mapService.unitSizeWithMargin) &&
+      (mouseY >= unit.y && mouseY <= unit.y + this.mapService.unitSizeWithMargin));
 
     if (selectedUnit != null) {
       this.selectedUnits.forEach(unit => this.drawUnit(unit));
