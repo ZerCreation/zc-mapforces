@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpService } from 'src/app/services/http.service';
-import { GamePlayDetails } from 'src/app/models/game-play-details';
-import { MapUnit } from 'src/app/models/map-unit';
+import { GamePlayDetails } from 'src/app/dtos/game-play-details';
+import { MapUnit } from 'src/app/dtos/map-unit';
 import { map, tap } from 'rxjs/operators';
 import { MapService } from 'src/app/services/map.service';
 import { MapViewUnit } from 'src/app/models/map-view-unit';
@@ -52,7 +52,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   public onCanvasClicked(event: MouseEvent) {
     var canvasRectangle = this.htmlCanvas.getBoundingClientRect();
     const mouseX = event.clientX - canvasRectangle.left;
-    const mouseY = (event.clientY - canvasRectangle.top);
+    const mouseY = event.clientY - canvasRectangle.top;
 
     var selectedUnit: MapViewUnit = this.mapService.units.find(unit => 
       (mouseX >= unit.x && mouseX <= unit.x + this.mapService.unitSizeWithMargin) &&

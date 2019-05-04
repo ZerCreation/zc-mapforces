@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MapUnit } from '../models/map-unit';
+import { MapUnit } from '../dtos/map-unit';
 import { MapViewUnit } from '../models/map-view-unit';
 
 @Injectable({
