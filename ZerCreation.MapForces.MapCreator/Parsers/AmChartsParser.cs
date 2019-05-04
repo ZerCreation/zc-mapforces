@@ -35,6 +35,8 @@ namespace ZerCreation.MapForces.MapCreator.Parsers
 
             return new MapDescription
             {
+                Width = (int)transformedPoints.Max(tPoint => tPoint.Item1),
+                Height = (int)transformedPoints.Max(tPoint => tPoint.Item2),
                 AreaUnits = transformedPoints
                     .OrderBy(tPoint => tPoint.Item1)
                     .ThenBy(tPoint => tPoint.Item2)
