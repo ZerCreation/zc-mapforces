@@ -64,9 +64,11 @@
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
     <Compile Include="EngineDispatcher.cs" />
+    <Compile Include="Map\Cartographer\BasicCartographer.cs" />
     <Compile Include="Map\Coordinates.cs" />
     <Compile Include="Map\Cartographer\ICartographer.cs" />
-    <Compile Include="Map\MapSettings.cs" />
+    <Compile Include="Map\MapBuilder.cs" />
+    <Compile Include="Map\MapDescription.cs" />
     <Compile Include="Map\TrackCreator.cs" />
     <Compile Include="Map\Vector.cs" />
     <Compile Include="Operations\MoveMode.cs" />

@@ -20,5 +20,19 @@ namespace ZerCreation.MapForces.WebApi.Extensions
 
             return new AutofacServiceProvider(ApplicationContainer);
         }
+
+        public static void ConfigureCors(this IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("EnableCORS", builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                );
+            });
+
+        }
     }
 }

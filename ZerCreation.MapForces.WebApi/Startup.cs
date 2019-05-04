@@ -20,6 +20,8 @@ namespace ZerCreation.MapForces.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureCors();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
                 //.AddControllersAsServices();
 
@@ -37,6 +39,8 @@ namespace ZerCreation.MapForces.WebApi
             {
                 app.UseHsts();
             }
+
+            app.UseCors("EnableCORS");
 
             app.UseHttpsRedirection();
             app.UseMvc();

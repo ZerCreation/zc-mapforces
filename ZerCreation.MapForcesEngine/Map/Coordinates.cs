@@ -1,5 +1,8 @@
-﻿namespace ZerCreation.MapForcesEngine.Map
+﻿using System;
+
+namespace ZerCreation.MapForcesEngine.Map
 {
+    [Serializable()]
     public struct Coordinates
     {
         public int X { get; set; }

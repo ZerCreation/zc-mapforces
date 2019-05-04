@@ -5,6 +5,6 @@ namespace ZerCreation.MapForcesEngine.Map.Cartographer
     public interface ICartographer
     {
         AreaUnit FindAreaUnit(Coordinates position);
-        void DrawMap(MapSettings mapSettings);
+        void DrawMap(MapDescription mapDescription);
     }
 }
