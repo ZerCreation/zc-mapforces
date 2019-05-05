@@ -8,12 +8,11 @@ namespace ZerCreation.MapForcesEngine.Map
     {
         public MapDescription BuildFromFile()
         {
-            IFormatter formatter = new BinaryFormatter();
-
             string filePath = @"C:\Zer Creation\Projects\Map Forces\ZerCreation.MapForcesEngine\ZerCreation.MapForces.MapCreator\bin\Debug\netcoreapp2.1\map.mfm";
-            using (FileStream streamToValidate = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                var readMap = (MapDescription)formatter.Deserialize(streamToValidate);
+                IFormatter formatter = new BinaryFormatter();
+                var readMap = (MapDescription)formatter.Deserialize(fileStream);
                 return readMap;
             }
         }
