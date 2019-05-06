@@ -7,7 +7,7 @@ import { MapViewUnit } from '../models/map-view-unit';
 })
 export class MapService {
   public units: MapViewUnit[];
-  public unitSize = 9;
+  public unitSize = 12;
   public unitSizeWithMargin = this.unitSize + 1;
 
   constructor() { }

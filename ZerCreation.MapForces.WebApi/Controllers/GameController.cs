@@ -40,8 +40,8 @@ namespace ZerCreation.MapForces.WebApi.Controllers
 
             var gameDescription = new GamePlayDetailsDto
             {
-                MapWidth = 100,
-                MapHeight = 80,
+                MapWidth = mapDescription.Width,
+                MapHeight = mapDescription.Height,
                 Units = mapDescription.AreaUnits.Select(unit => 
                     new MapUnitDto
                     {
