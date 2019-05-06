@@ -24,7 +24,7 @@ namespace ZerCreation.MapForces.MapCreator
 
             this.Save(map);
 
-            this.Verify(formatter);
+            this.Verify();
         }
 
         private MapDescription Parse()
@@ -50,7 +50,7 @@ namespace ZerCreation.MapForces.MapCreator
             }
         }
 
-        private void Verify(IFormatter formatter)
+        private void Verify()
         {
             using (var streamToValidate = new FileStream("map.mfm", FileMode.Open, FileAccess.Read))
             {
