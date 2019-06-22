@@ -17,9 +17,21 @@ export class MapService {
       return {
         x: unit.x * this.unitSizeWithMargin,
         y: unit.y * this.unitSizeWithMargin,
-        color: unit.terrainType == 'Earth' ? 'green' : 'blue'
+        color: this.selectColor(unit)
       };
     })
   }
 
+
+  private selectColor(unit: MapUnit): string {
+    if (unit.ownedBy != null) {
+      return 'orange';
+    }
+
+    if (unit.terrainType == 'Earth') {
+      return 'green';
+    }
+    
+    return 'blue';
+  }
 }

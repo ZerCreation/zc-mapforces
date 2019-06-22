@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForces.WebApi.Dtos;
+using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine;
 using ZerCreation.MapForcesEngine.Map;
 
@@ -47,7 +48,8 @@ namespace ZerCreation.MapForces.WebApi.Controllers
                     {
                         TerrainType = TerrainTypeDto.Earth,
                         X = unit.Position.X,
-                        Y = unit.Position.Y
+                        Y = unit.Position.Y,
+                        OwnedBy = PlayerMapper.MapToDto(unit.PlayerPossesion)
                     })
             };
 

@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ZerCreation.MapForces.MapCreator.Parsers;
+using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.MapCreator
 {
@@ -20,7 +24,7 @@ namespace ZerCreation.MapForces.MapCreator
 
         internal void Run()
         {
-            MapDescription map = Parse();
+            MapDescription map = this.Parse();
 
             this.Save(map);
 
@@ -31,8 +35,9 @@ namespace ZerCreation.MapForces.MapCreator
         {
             try
             {
-                string mapText = File.ReadAllText(@"C:\Zer Creation\Projects\Map Forces\Maps\amCharts.pixelMap.html");
+                string mapText = File.ReadAllText(@"C:\Zer Creation\Projects\Map Forces\Maps\amCharts.pixelMap.World-Mercator.html");
                 MapDescription map = this.parser.ParseToMap(mapText);
+                this.DefineUnitsOfPlayers(map.AreaUnits);
 
                 return map;
             }
@@ -40,6 +45,15 @@ namespace ZerCreation.MapForces.MapCreator
             {
                 throw;
             }
+        }
+
+        private void DefineUnitsOfPlayers(List<AreaUnit> areaUnits)
+        {
+            var random = new Random();
+            int centerUnitIdx = random.Next(areaUnits.Count);
+            AreaUnit centerUnit = areaUnits[centerUnitIdx];
+
+            centerUnit.PlayerPossesion = new Player("ZwRst");
         }
 
         private void Save(MapDescription map)
