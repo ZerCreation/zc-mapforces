@@ -1,8 +1,8 @@
-import { PlayerDto } from './player-dto';
+import { Ownership } from './ownership';
 
 export interface MapUnit {
     x: number;
     y: number;
     terrainType: string;
-    ownedBy: PlayerDto;
+    ownership: Ownership;
 }

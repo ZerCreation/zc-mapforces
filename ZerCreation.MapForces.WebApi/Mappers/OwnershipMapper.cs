@@ -3,18 +3,19 @@ using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.WebApi.Mappers
 {
-    public static class PlayerMapper
+    public static class OwnershipMapper
     {
-        public static PlayerDto MapToDto(Player player)
+        public static OwnershipDto MapToDto(Player player)
         {
             if (player == null)
             {
                 return null;
             }
 
-            return new PlayerDto
+            return new OwnershipDto
             {
-                Name = player.Name
+                PlayerId = player.Id,
+                Force = 1
             };
         }
     }

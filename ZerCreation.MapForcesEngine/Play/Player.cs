@@ -5,12 +5,15 @@ namespace ZerCreation.MapForcesEngine.Play
     [Serializable()]
     public class Player
     {
-        public Player(string name)
+        public Guid Id { get; }
+        public string Name { get; set; }
+        public int MovePoints { get; set; }
+
+        public Player(Guid id, string name)
         {
+            this.Id = id;
             this.Name = name;
         }
 
-        public string Name { get; set; }
-        public int MovePoints { get; set; }
     }
 }

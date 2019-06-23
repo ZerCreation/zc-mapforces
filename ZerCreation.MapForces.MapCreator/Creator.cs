@@ -53,7 +53,7 @@ namespace ZerCreation.MapForces.MapCreator
             int centerUnitIdx = random.Next(areaUnits.Count);
             AreaUnit centerUnit = areaUnits[centerUnitIdx];
 
-            centerUnit.PlayerPossesion = new Player("ZwRst");
+            centerUnit.PlayerPossesion = new Player(Guid.NewGuid(), "ZwRst");
         }
 
         private void Save(MapDescription map)

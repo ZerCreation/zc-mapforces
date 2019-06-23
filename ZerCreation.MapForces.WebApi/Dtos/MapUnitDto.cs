@@ -7,8 +7,7 @@ namespace ZerCreation.MapForces.WebApi.Dtos
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public PlayerDto OwnedBy { get; set; }
-        public int OwnedForce { get; set; }
+        public OwnershipDto Ownership { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public TerrainTypeDto TerrainType { get; set; }

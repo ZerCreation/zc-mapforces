@@ -49,7 +49,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
                         TerrainType = TerrainTypeDto.Earth,
                         X = unit.Position.X,
                         Y = unit.Position.Y,
-                        OwnedBy = PlayerMapper.MapToDto(unit.PlayerPossesion)
+                        Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
                     })
             };
 
