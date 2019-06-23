@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MapUnit } from '../dtos/map-unit';
 import { MapViewUnit } from '../models/map-view-unit';
+import { PlayerDto } from '../dtos/player-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,11 @@ export class MapService {
       return {
         x: unit.x * this.unitSizeWithMargin,
         y: unit.y * this.unitSizeWithMargin,
-        color: this.selectColor(unit)
+        color: this.selectColor(unit),
+        canBeSelected: this.isCurrentPlayerUnit(unit.ownedBy)
       };
     })
   }
-
 
   private selectColor(unit: MapUnit): string {
     if (unit.ownedBy != null) {
@@ -33,5 +34,10 @@ export class MapService {
     }
     
     return 'blue';
+  }
+
+  private isCurrentPlayerUnit(ownedBy: PlayerDto): any {
+    // TODO: Recognize players here
+    return ownedBy != null;
   }
 }

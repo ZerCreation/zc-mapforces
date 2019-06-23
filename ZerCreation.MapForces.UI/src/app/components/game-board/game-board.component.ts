@@ -5,6 +5,7 @@ import { MapUnit } from 'src/app/dtos/map-unit';
 import { map, tap } from 'rxjs/operators';
 import { MapService } from 'src/app/services/map.service';
 import { MapViewUnit } from 'src/app/models/map-view-unit';
+import { UnitsSelectionService } from 'src/app/services/units-selection.service';
 
 @Component({
   selector: 'app-game-board',
@@ -19,7 +20,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
 
   constructor(
     private httpService: HttpService,
-    private mapService: MapService) {}
+    private mapService: MapService,
+    private unitsSelectionService: UnitsSelectionService) {}
 
   ngOnInit() {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
@@ -29,7 +31,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
       map(data => data.units),
       tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
       .subscribe(() => {
-        this.mapService.units.forEach(unit => this.drawUnit(unit));
+        this.drawManyUnits(this.mapService.units);
       });
   }
 
@@ -54,17 +56,18 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     const mouseX = event.clientX - canvasRectangle.left;
     const mouseY = event.clientY - canvasRectangle.top;
 
-    var selectedUnit: MapViewUnit = this.mapService.units.find(unit => 
-      (mouseX >= unit.x && mouseX <= unit.x + this.mapService.unitSizeWithMargin) &&
-      (mouseY >= unit.y && mouseY <= unit.y + this.mapService.unitSizeWithMargin));
+    // Clear all previously visible units selection
+    this.drawManyUnits(this.selectedUnits);
 
-    if (selectedUnit != null) {
-      this.selectedUnits.forEach(unit => this.drawUnit(unit));
-      this.selectedUnits = [];
-      
-      this.drawUnit(selectedUnit, "black");
-      this.selectedUnits.push(selectedUnit);
-    }
+    // Get currently selected units
+    this.selectedUnits = this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
+
+    // Mark new units in selection color
+    this.drawManyUnits(this.selectedUnits, "black");
+  }
+
+  private drawManyUnits(units: MapViewUnit[], customColor: string = null) {
+    units.forEach(unit => this.drawUnit(unit, customColor));
   }
 
   private drawUnit(unit: MapViewUnit, customColor: string = null) {
