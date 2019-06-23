@@ -6,6 +6,7 @@ import { map, tap } from 'rxjs/operators';
 import { MapService } from 'src/app/services/map.service';
 import { MapViewUnit } from 'src/app/models/map-view-unit';
 import { UnitsSelectionService } from 'src/app/services/units-selection.service';
+import { MoveService } from 'src/app/services/move.service';
 
 @Component({
   selector: 'app-game-board',
@@ -21,7 +22,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   constructor(
     private httpService: HttpService,
     private mapService: MapService,
-    private unitsSelectionService: UnitsSelectionService) {}
+    private unitsSelectionService: UnitsSelectionService,
+    private moveService: MoveService) {}
 
   ngOnInit() {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
@@ -52,18 +54,32 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   }
 
   public onCanvasClicked(event: MouseEvent) {
+    
+    const { mouseX, mouseY } = this.getMouseCoordinates(event);
+
+    // Try to move
+    var moveWasDone: boolean = this.moveService.moveSelectedTo(this.selectedUnits, mouseX, mouseY);
+    if (moveWasDone) {
+      this.clearUnitsSelection();
+      return;
+    }
+
+    // Get then mark currently selected units
+    this.selectedUnits = this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
+    this.drawManyUnits(this.selectedUnits, "black");
+  }
+
+  private clearUnitsSelection() {
+    this.drawManyUnits(this.selectedUnits);
+    this.selectedUnits = [];
+  }
+
+  private getMouseCoordinates(event: MouseEvent) {
     var canvasRectangle = this.htmlCanvas.getBoundingClientRect();
     const mouseX = event.clientX - canvasRectangle.left;
     const mouseY = event.clientY - canvasRectangle.top;
 
-    // Clear all previously visible units selection
-    this.drawManyUnits(this.selectedUnits);
-
-    // Get currently selected units
-    this.selectedUnits = this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
-
-    // Mark new units in selection color
-    this.drawManyUnits(this.selectedUnits, "black");
+    return { mouseX, mouseY };
   }
 
   private drawManyUnits(units: MapViewUnit[], customColor: string = null) {

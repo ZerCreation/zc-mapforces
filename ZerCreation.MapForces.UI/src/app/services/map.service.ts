@@ -24,6 +24,19 @@ export class MapService {
     })
   }
 
+  public findUnitToSelectByCoordinates(x: number, y: number) {
+    return this.units.find(unit => 
+      unit.canBeSelected &&
+      (x >= unit.x && x <= unit.x + this.unitSizeWithMargin) &&
+      (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
+  }
+
+  public findUnitByCoordinates(x: number, y: number) {
+    return this.units.find(unit => 
+      (x >= unit.x && x <= unit.x + this.unitSizeWithMargin) &&
+      (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
+  }
+
   private selectColor(unit: MapUnit): string {
     if (unit.ownership != null) {
       return 'orange';
