@@ -5,21 +5,27 @@ import { MapService } from './map.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UnitsSelectionService {
-  private selectedUnits: MapViewUnit[] = [];
-  
-  constructor(private mapService: MapService) { }
+export class UnitsSelectionService {  
+  private _selectedUnits: MapViewUnit[];
+  get units(): MapViewUnit[] {
+    return this._selectedUnits;
+  }
 
-  updateUnitsSelection(mouseX: number, mouseY: number): MapViewUnit[] {
+  constructor(private mapService: MapService) {
+    this._selectedUnits = [];
+  }
+
+  updateUnitsSelection(mouseX: number, mouseY: number) {
     // TODO: Define more selection strategies here
 
     var unitToAdd: MapViewUnit = this.mapService.findUnitToSelectByCoordinates(mouseX, mouseY);
 
-    if (unitToAdd != null && !this.selectedUnits.includes(unitToAdd)) {
-      this.selectedUnits.push(unitToAdd);
+    if (unitToAdd != null && !this._selectedUnits.includes(unitToAdd)) {
+      this._selectedUnits.push(unitToAdd);
     }
-
-    return this.selectedUnits;
   }
 
+  clearSelection() {
+    this._selectedUnits = [];
+  }
 }

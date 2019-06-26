@@ -17,7 +17,6 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
   private htmlCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private selectedUnits: MapViewUnit[] = [];
 
   constructor(
     private httpService: HttpService,
@@ -58,20 +57,16 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     const { mouseX, mouseY } = this.getMouseCoordinates(event);
 
     // Try to move
-    var moveWasDone: boolean = this.moveService.moveSelectedTo(this.selectedUnits, mouseX, mouseY);
+    var moveWasDone: boolean = this.moveService.moveSelectedTo(this.unitsSelectionService.units, mouseX, mouseY);
     if (moveWasDone) {
-      this.clearUnitsSelection();
+      this.drawManyUnits(this.unitsSelectionService.units);
+      this.unitsSelectionService.clearSelection();
       return;
     }
 
     // Get then mark currently selected units
-    this.selectedUnits = this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
-    this.drawManyUnits(this.selectedUnits, "black");
-  }
-
-  private clearUnitsSelection() {
-    this.drawManyUnits(this.selectedUnits);
-    this.selectedUnits = [];
+    this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
+    this.drawManyUnits(this.unitsSelectionService.units, "black");
   }
 
   private getMouseCoordinates(event: MouseEvent) {

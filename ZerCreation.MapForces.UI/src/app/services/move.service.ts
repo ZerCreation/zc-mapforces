@@ -17,7 +17,8 @@ export class MoveService {
     var unit: MapViewUnit = this.mapService.findUnitByCoordinates(mouseX, mouseY);
     if (unit != null) {
       // TODO: Implement move here
-      alert(`Move attempt to (${unit.x}, ${unit.y})`);
+      const { x, y } = this.mapService.getLogicCoordinatesOfUnit(unit);
+      alert(`Move attempt to (${x}, ${y})`);
       return true;
     }
 

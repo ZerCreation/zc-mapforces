@@ -37,6 +37,13 @@ export class MapService {
       (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
   }
 
+  public getLogicCoordinatesOfUnit(unit: MapViewUnit) {
+    const logicX = unit.x / this.unitSizeWithMargin;
+    const logicY = unit.y / this.unitSizeWithMargin;
+
+    return { x: logicX, y: logicY };
+  }
+
   private selectColor(unit: MapUnit): string {
     if (unit.ownership != null) {
       return 'orange';
