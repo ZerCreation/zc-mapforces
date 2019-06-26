@@ -26,7 +26,7 @@ namespace ZerCreation.MapForces.WebApi.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("EnableCORS", builder => builder
-                    .AllowAnyOrigin()
+                    .WithOrigins("http://localhost:4200")
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials()
