@@ -27,7 +27,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
 
-    this.httpService.startConnection();
+    this.httpService.startHubConnection();
+    this.httpService.addHubListener();
 
     this.httpService.joinToGame().pipe(
       tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),

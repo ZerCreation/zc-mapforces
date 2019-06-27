@@ -47,7 +47,7 @@ namespace ZerCreation.MapForces.WebApi
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<GameHub>("/game");
+                routes.MapHub<GameHub>("/gamehub");
             });
 
             app.UseHttpsRedirection();

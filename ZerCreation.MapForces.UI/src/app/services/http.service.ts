@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from "@aspnet/signalr";
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,9 @@ export class HttpService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public startConnection = () => {
+  public startHubConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl('http://localhost:59816/game')
+      .withUrl(`${environment.webApiUrl}/gamehub`)
       .build();
 
     this.hubConnection
@@ -22,8 +23,14 @@ export class HttpService {
       .catch(err => console.log('Error while starting connection: ' + err));
   }
 
+  public addHubListener = () => {
+    this.hubConnection.on('actionsnotification', (data) => {
+      console.log(data);
+    });
+  }
+
   public joinToGame() {
-    return this.httpClient.post("http://localhost:59816/api/game/join", null);
+    return this.httpClient.post(`${environment.webApiUrl}/api/game/join`, null);
   }
 
 }
