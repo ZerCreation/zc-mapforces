@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using ZerCreation.MapForces.MapCreator.Parsers;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.MapCreator

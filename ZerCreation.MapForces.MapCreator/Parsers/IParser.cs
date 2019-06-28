@@ -1,4 +1,5 @@
 ﻿using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Models;
 
 namespace ZerCreation.MapForces.MapCreator.Parsers
 {

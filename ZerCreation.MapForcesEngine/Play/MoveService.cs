@@ -1,7 +1,7 @@
 ﻿using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
-using ZerCreation.MapForcesEngine.Operations;
+using ZerCreation.MapForcesEngine.Models;
 
 namespace ZerCreation.MapForcesEngine.Play
 {
