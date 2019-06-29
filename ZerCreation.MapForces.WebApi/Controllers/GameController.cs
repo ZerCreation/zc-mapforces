@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,11 @@ using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForces.WebApi.HubConfig;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine;
+using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
 {
@@ -63,6 +68,35 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             await this.gameHubContext.Clients.All.SendAsync("actionsnotification", "player joined");
 
             return this.Ok(gameDescription);
+        }
+
+        [HttpPost("move")]
+        public async Task<IActionResult> Move(MoveDto moveDto)
+        {
+            // TODO: Read it from memory using Cartographer's knowledge
+            var moveOperation = new MoveOperation
+            {
+                Mode = MoveMode.Basic,
+                MovingArmy = new Army
+                {
+                    Units = moveDto.UnitsToMove.Select(unit => new MovingUnit(unit.X, unit.Y)).ToList(),
+                    PlayerPossesion = new Player(Guid.NewGuid(), "ZwRst")
+                    {
+                        MovePoints = 1000
+                    }
+                },
+                AreaTarget = new Area
+                {
+                    Units = moveDto.UnitsTarget.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
+                }
+            };
+
+            //this.engineDispatcher.Move(moveOperation);
+
+            await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
+                $"player moved to ({moveDto.UnitsTarget[0].X}, {moveDto.UnitsTarget[0].Y})");
+
+            return this.Ok();
         }
     }
 }

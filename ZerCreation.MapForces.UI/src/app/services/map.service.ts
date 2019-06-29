@@ -37,7 +37,7 @@ export class MapService {
       (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
   }
 
-  public getLogicCoordinatesOfUnit(unit: MapViewUnit) {
+  public getMapUnitCoordinates(unit: MapViewUnit) {
     const logicX = unit.x / this.unitSizeWithMargin;
     const logicY = unit.y / this.unitSizeWithMargin;
 
