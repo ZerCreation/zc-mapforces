@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Enums;
-using ZerCreation.MapForcesEngine.Map;
+﻿using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Play;

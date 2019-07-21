@@ -2,6 +2,7 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using ZerCreation.MapForces.WebApi.Configuration;
 using ZerCreation.MapForcesEngine.Configuration;
 
 namespace ZerCreation.MapForces.WebApi.Extensions
@@ -13,6 +14,7 @@ namespace ZerCreation.MapForces.WebApi.Extensions
         public static IServiceProvider ConfigureDependencyInjection(this IServiceCollection services)
         {
             var builder = new ContainerBuilder();
+            builder.RegisterModule<WebApiModule>();
             builder.RegisterModule<EngineModule>();
             builder.Populate(services);
 

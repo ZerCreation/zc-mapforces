@@ -1,16 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForces.WebApi.HubConfig;
+using ZerCreation.MapForces.WebApi.Logic;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
-using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Play;
 
@@ -25,6 +24,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
 
         public GameController(
             EngineDispatcher engineDispatcher,
+            EngineGateway engineGateway,
             IHubContext<GameHub> gameHubContext)
         {
             this.engineDispatcher = engineDispatcher;
