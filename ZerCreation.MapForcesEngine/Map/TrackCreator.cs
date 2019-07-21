@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
-using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Move;
 
 namespace ZerCreation.MapForcesEngine.Map
 {
@@ -24,28 +24,28 @@ namespace ZerCreation.MapForcesEngine.Map
 
         private void SetupBasicMovePaths(MoveOperation moveOperation)
         {
-            Army movingArmy = moveOperation.MovingArmy;
-            Area areaTarget = moveOperation.AreaTarget;
+            Area sourceArea = moveOperation.SourceArea;
+            Area targetArea = moveOperation.TargetArea;
 
-            if (movingArmy.Units.Count != areaTarget.Units.Count)
+            if (sourceArea.Units.Count != targetArea.Units.Count)
             {
                 throw new ArgumentException("The number of army units differs from number of area units. " +
                     "For Basic move operation it must be the same.");
             }
 
-            int unitsCount = movingArmy.Units.Count;
+            int unitsCount = sourceArea.Units.Count;
             for (int i = 0; i < unitsCount; i++)
             {
-                MovingUnit movingUnit = movingArmy.Units[i];
-                AreaUnit areaUnit = areaTarget.Units[i];
+                AreaUnit sourceUnit = sourceArea.Units[i];
+                AreaUnit targetUnit = targetArea.Units[i];
 
-                Queue<Coordinates> movePath = this.PreparePath(movingUnit.Position, areaUnit.Position);
-                if (movePath.Last() != areaUnit.Position)
+                Queue<Coordinates> movePath = this.PreparePath(sourceUnit.Position, targetUnit.Position);
+                if (movePath.Last() != targetUnit.Position)
                 {
                     throw new Exception("Generated move path doesn't contain right target.");
                 }
 
-                movingUnit.SetupMove(movePath);
+                moveOperation.AddMovePath(movePath);
             }
         }
 

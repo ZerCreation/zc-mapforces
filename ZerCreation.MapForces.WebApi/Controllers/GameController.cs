@@ -11,6 +11,7 @@ using ZerCreation.MapForcesEngine;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Move;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
@@ -76,22 +77,19 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             // TODO: Read it from memory using Cartographer's knowledge
             var moveOperation = new MoveOperation
             {
+                Player = new Player(Guid.NewGuid(), "ZwRst"),
                 Mode = MoveMode.Basic,
-                MovingArmy = new Army
+                SourceArea = new Area
                 {
-                    Units = moveDto.UnitsToMove.Select(unit => new MovingUnit(unit.X, unit.Y)).ToList(),
-                    PlayerPossesion = new Player(Guid.NewGuid(), "ZwRst")
-                    {
-                        MovePoints = 1000
-                    }
+                    Units = moveDto.UnitsToMove.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
                 },
-                AreaTarget = new Area
+                TargetArea = new Area
                 {
                     Units = moveDto.UnitsTarget.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
                 }
             };
 
-            //this.engineDispatcher.Move(moveOperation);
+            this.engineDispatcher.Move(moveOperation);
 
             await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
                 $"player moved to ({moveDto.UnitsTarget[0].X}, {moveDto.UnitsTarget[0].Y})");

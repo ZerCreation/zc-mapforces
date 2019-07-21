@@ -8,7 +8,7 @@ using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
-using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Move;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Tests.Play
@@ -46,15 +46,15 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
         {
             // Given
             int circleRadius = 3; //new Random().Next(1, 5);
-            Army movingArmy = this.Given_CreateCircleArmy(new Coordinates(armyX, armyY), circleRadius);
+            Area movingArmy = this.Given_CreateCircleArmy(new Coordinates(armyX, armyY), circleRadius);
             Area areaTarget = this.Given_CreateCircleArea(new Coordinates(areaX, areaY), circleRadius);
 
             var moveOperation = new MoveOperation
             {
                 Player = this.player,
                 Mode = MoveMode.Basic,
-                MovingArmy = movingArmy,
-                AreaTarget = areaTarget
+                SourceArea = movingArmy,
+                TargetArea = areaTarget
             };
 
             // When
@@ -71,7 +71,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
         public void Single_unit_should_reach_five_moving_steps()
         {
             // Given
-            Army movingArmy = this.CreateMovingArmy(new[] { new Coordinates(0, 0) }, playerMovePoints: 1000);
+            Area movingArmy = this.CreateMovingArmy(new[] { new Coordinates(0, 0) }, playerMovePoints: 1000);
 
             int circleRadius = 1;
             var pathSteps = new List<Area>
@@ -89,8 +89,8 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
                 {
                     Player = this.player,
                     Mode = MoveMode.Basic,
-                    MovingArmy = movingArmy,
-                    AreaTarget = step
+                    SourceArea = movingArmy,
+                    TargetArea = step
                 };
 
                 // When
@@ -118,28 +118,28 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
             };
         }
 
-        private Army Given_CreateCircleArmy(Coordinates centerPosition, int armyRadius, int playerMovePoints = 100)
+        private Area Given_CreateCircleArmy(Coordinates centerPosition, int armyRadius, int playerMovePoints = 100)
         {
             List<Coordinates> unitsPositions = this.CreateCircleShapedUnits(centerPosition, armyRadius);
 
             return this.CreateMovingArmy(unitsPositions, playerMovePoints);
         }
 
-        private Army CreateMovingArmy(IEnumerable<Coordinates> initPositions, int playerMovePoints = 100)
+        private Area CreateMovingArmy(IEnumerable<Coordinates> initPositions, int playerMovePoints = 100)
         {
             IPlayer player = Substitute.For<IPlayer>();
             player.MovePoints = playerMovePoints;
 
-            List<MovingUnit> units = initPositions
-                .Select(position => new MovingUnit(position))
+            List<AreaUnit> units = initPositions
+                .Select(position => new AreaUnit(position))
                 .ToList();
 
-            Army movingArmy = new Army
+            var targetArea = new Area
             {
                 Units = units
             };
 
-            return movingArmy;
+            return targetArea;
         }
 
         private List<Coordinates> CreateCircleShapedUnits(Coordinates centerPosition, int armyRadius)

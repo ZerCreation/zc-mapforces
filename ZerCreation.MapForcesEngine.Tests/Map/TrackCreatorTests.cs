@@ -8,7 +8,7 @@ using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
-using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Move;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Tests.Map
@@ -33,15 +33,14 @@ namespace ZerCreation.MapForcesEngine.Tests.Map
             var moveOperation = new MoveOperation
             {
                 Mode = MoveMode.Basic,
-                MovingArmy = new Army()
+                SourceArea = new Area
                 {
-                    PlayerPossesion = Substitute.For<Player>(),
-                    Units = new List<MovingUnit>
+                    Units = new List<AreaUnit>
                     {
-                        new MovingUnit(10, 10)
+                        new AreaUnit(10, 10)
                     }
                 },
-                AreaTarget = new Area
+                TargetArea = new Area
                 {
                     Units = new List<AreaUnit>
                     {
@@ -64,12 +63,11 @@ namespace ZerCreation.MapForcesEngine.Tests.Map
             var moveOperation = new MoveOperation
             {
                 Mode = MoveMode.Basic,
-                MovingArmy = new Army
+                SourceArea = new Area
                 {
-                    PlayerPossesion = Substitute.For<Player>(),
-                    Units = this.fixture.CreateMany<MovingUnit>(3).ToList()
+                    Units = this.fixture.CreateMany<AreaUnit>(3).ToList()
                 },
-                AreaTarget = new Area
+                TargetArea = new Area
                 {
                     Units = this.fixture.CreateMany<AreaUnit>(5).ToList()
                 }
