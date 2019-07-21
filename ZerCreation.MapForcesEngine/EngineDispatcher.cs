@@ -1,7 +1,7 @@
 ﻿using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
-using ZerCreation.MapForcesEngine.Play;
+using ZerCreation.MapForcesEngine.Move;
 
 namespace ZerCreation.MapForcesEngine
 {
