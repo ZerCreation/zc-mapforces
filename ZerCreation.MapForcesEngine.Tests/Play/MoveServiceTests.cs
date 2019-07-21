@@ -17,14 +17,19 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
     public class MoveServiceTests
     {
         private IFixture fixture;
+        private IPlayer player;
         private MoveService sut;
 
         [SetUp]
         public void Init()
         {
             this.fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
+
             var cartographer = this.fixture.Create<ICartographer>();
             cartographer.FindAreaUnit(Arg.Any<Coordinates>()).Returns(new AreaUnit(0, 0));
+
+            this.player = this.fixture.Create<IPlayer>();
+            this.player.MovePoints = 1000;
 
             this.sut = new MoveService(new TrackCreator(), cartographer);
         }
@@ -46,6 +51,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
 
             var moveOperation = new MoveOperation
             {
+                Player = this.player,
                 Mode = MoveMode.Basic,
                 MovingArmy = movingArmy,
                 AreaTarget = areaTarget
@@ -81,6 +87,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
             {
                 var moveOperation = new MoveOperation
                 {
+                    Player = this.player,
                     Mode = MoveMode.Basic,
                     MovingArmy = movingArmy,
                     AreaTarget = step
@@ -120,7 +127,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
 
         private Army CreateMovingArmy(IEnumerable<Coordinates> initPositions, int playerMovePoints = 100)
         {
-            Player player = Substitute.For<Player>();
+            IPlayer player = Substitute.For<IPlayer>();
             player.MovePoints = playerMovePoints;
 
             List<MovingUnit> units = initPositions
@@ -129,7 +136,6 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
 
             Army movingArmy = new Army
             {
-                PlayerPossesion = player,
                 Units = units
             };
 

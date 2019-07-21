@@ -74,6 +74,7 @@
     <Compile Include="Enums\MoveMode.cs" />
     <Compile Include="Models\MoveOperation.cs" />
     <Compile Include="Play\MoveService.cs" />
+    <Compile Include="Play\IPlayer.cs" />
     <Compile Include="Play\Player.cs" />
     <Compile Include="Map\Cartographer\PlainCartographer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
