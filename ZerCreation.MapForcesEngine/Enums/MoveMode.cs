@@ -2,7 +2,6 @@
 {
     public enum MoveMode
     {
-        // Doesn't change the shape
-        Basic
+        PathOfConquer
     }
 }

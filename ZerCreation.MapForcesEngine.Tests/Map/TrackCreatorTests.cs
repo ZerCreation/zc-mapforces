@@ -32,7 +32,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Map
             // Given
             var moveOperation = new MoveOperation
             {
-                Mode = MoveMode.Basic,
+                Mode = MoveMode.PathOfConquer,
                 SourceArea = new Area
                 {
                     Units = new List<AreaUnit>
@@ -62,7 +62,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Map
             // Given
             var moveOperation = new MoveOperation
             {
-                Mode = MoveMode.Basic,
+                Mode = MoveMode.PathOfConquer,
                 SourceArea = new Area
                 {
                     Units = this.fixture.CreateMany<AreaUnit>(3).ToList()

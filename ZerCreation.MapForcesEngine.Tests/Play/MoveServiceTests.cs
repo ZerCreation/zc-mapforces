@@ -52,7 +52,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
             var moveOperation = new MoveOperation
             {
                 Player = this.player,
-                Mode = MoveMode.Basic,
+                Mode = MoveMode.PathOfConquer,
                 SourceArea = movingArmy,
                 TargetArea = areaTarget
             };
@@ -88,7 +88,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
                 var moveOperation = new MoveOperation
                 {
                     Player = this.player,
-                    Mode = MoveMode.Basic,
+                    Mode = MoveMode.PathOfConquer,
                     SourceArea = movingArmy,
                     TargetArea = step
                 };

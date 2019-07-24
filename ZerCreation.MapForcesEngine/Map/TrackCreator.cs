@@ -13,7 +13,7 @@ namespace ZerCreation.MapForcesEngine.Map
         {
             switch (moveOperation.Mode)
             {
-                case MoveMode.Basic:
+                case MoveMode.PathOfConquer:
                     // TODO: Use strategy pattern here
                     this.SetupBasicMovePaths(moveOperation);
                     break;

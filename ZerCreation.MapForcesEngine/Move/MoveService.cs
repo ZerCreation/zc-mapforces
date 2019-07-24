@@ -1,4 +1,6 @@
-﻿using ZerCreation.MapForcesEngine.AreaUnits;
+﻿using System.Collections.Generic;
+using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Play;
@@ -16,34 +18,39 @@ namespace ZerCreation.MapForcesEngine.Move
             this.cartographer = cartographer;
         }
 
-        public void Move(MoveOperation moveOperation)
+        public IEnumerable<HashSet<AreaUnit>> Move(MoveOperation moveOperation)
         {
             // TODO: Check cartographer to assign Army.PlayerPosession
             // TODO: Check cartographer to assign Army.Units.Value
 
             this.trackCreator.SetupMovePaths(moveOperation);
-            IPlayer player = moveOperation.Player;
 
             while (!moveOperation.CheckIfMoveIsFinished())
             {
+                var nextPathPointsUnits = new HashSet<AreaUnit>();
                 foreach (var unitTracker in moveOperation.UnitsTrackers)
                 {
                     Coordinates newUnitPosition = unitTracker.MoveUnitToNextPathPoint();
-                    AreaUnit resolvedAreaUnit = this.ResolveNewUnitPosition(newUnitPosition, player);
-                    this.NotifyAboutResolvation(resolvedAreaUnit);
-                    player.MovePoints--;
+                    AreaUnit resolvedAreaUnit = this.ResolveNewUnitPosition(newUnitPosition, moveOperation);
+                    nextPathPointsUnits.Add(resolvedAreaUnit);
+                    //this.NotifyAboutResolvation(resolvedAreaUnit);
+                    moveOperation.Player.MovePoints--;
                 }
+
+                yield return nextPathPointsUnits;
             }
         }
 
-        private AreaUnit ResolveNewUnitPosition(Coordinates newUnitPosition, IPlayer player)
+        private AreaUnit ResolveNewUnitPosition(Coordinates newUnitPosition, MoveOperation moveOperation)
         {
             AreaUnit areaUnit = this.cartographer.FindAreaUnit(newUnitPosition);
+            
             // call DiplomacyArbiter for each unit here
             // call BattleArbiter for each unit here
-
-            // update area possession if needed
-            //areaUnit.PlayerPossesion = player;
+            if (moveOperation.Mode == MoveMode.PathOfConquer)
+            {
+                areaUnit.PlayerPossesion = moveOperation.Player;
+            }
 
             return areaUnit;
         }

@@ -11,7 +11,8 @@ namespace ZerCreation.MapForces.WebApi.Configuration
             base.Load(builder);
 
             builder.RegisterType<EngineGateway>();
-            builder.RegisterType<BasicCartographer>().As<ICartographer>();
+            builder.RegisterType<BasicCartographer>().As<ICartographer>()
+                .SingleInstance();
         }
     }
 }

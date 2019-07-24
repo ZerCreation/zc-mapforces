@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ZerCreation.MapForces.WebApi.Dtos;
@@ -77,8 +78,11 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             // TODO: Read it from memory using Cartographer's knowledge
             var moveOperation = new MoveOperation
             {
-                Player = new Player(Guid.NewGuid(), "ZwRst"),
-                Mode = MoveMode.Basic,
+                Player = new Player(Guid.NewGuid(), "ZwRst")
+                {
+                    MovePoints = int.MaxValue
+                },
+                Mode = MoveMode.PathOfConquer,
                 SourceArea = new Area
                 {
                     Units = moveDto.UnitsToMove.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
@@ -89,10 +93,13 @@ namespace ZerCreation.MapForces.WebApi.Controllers
                 }
             };
 
-            this.engineDispatcher.Move(moveOperation);
+            IEnumerable<HashSet<AreaUnit>> unitsPaths = this.engineDispatcher.Move(moveOperation);
 
-            await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
-                $"player moved to ({moveDto.UnitsTarget[0].X}, {moveDto.UnitsTarget[0].Y})");
+            foreach (HashSet<AreaUnit> unit in unitsPaths)
+            {
+                await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
+                    $"player moved to ({unit.First().Position.X}, {unit.First().Position.Y})");
+            }
 
             return this.Ok();
         }
