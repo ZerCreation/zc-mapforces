@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoNSubstitute;
+using AutoFixture.NUnit3;
 using NSubstitute;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
@@ -26,7 +28,8 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
             this.fixture = new Fixture().Customize(new AutoNSubstituteCustomization());
 
             var cartographer = this.fixture.Create<ICartographer>();
-            cartographer.FindAreaUnit(Arg.Any<Coordinates>()).Returns(new AreaUnit(0, 0));
+            cartographer.FindAreaUnit(Arg.Any<Coordinates>())
+                .Returns(args => new AreaUnit(((Coordinates)args[0]).X, ((Coordinates)args[0]).Y));
 
             this.player = this.fixture.Create<IPlayer>();
             this.player.MovePoints = 1000;
@@ -46,24 +49,25 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
         {
             // Given
             int circleRadius = 3; //new Random().Next(1, 5);
-            Area movingArmy = this.Given_CreateCircleArmy(new Coordinates(armyX, armyY), circleRadius);
-            Area areaTarget = this.Given_CreateCircleArea(new Coordinates(areaX, areaY), circleRadius);
+            Area sourceArea = this.Given_CreateCircleArmy(new Coordinates(armyX, armyY), circleRadius);
+            Area targetArea = this.Given_CreateCircleArea(new Coordinates(areaX, areaY), circleRadius);
 
             var moveOperation = new MoveOperation
             {
                 Player = this.player,
                 Mode = MoveMode.PathOfConquer,
-                SourceArea = movingArmy,
-                TargetArea = areaTarget
+                SourceArea = sourceArea,
+                TargetArea = targetArea
             };
 
             // When
-            this.sut.Move(moveOperation);
+            IEnumerable<HashSet<AreaUnit>> moveResults = this.sut.Move(moveOperation);
+            List<AreaUnit> finalMoveResult = moveResults.Last().ToList();
 
             // Then
-            for (int i = 0; i < movingArmy.Units.Count; i++)
+            for (int i = 0; i < sourceArea.Units.Count; i++)
             {
-                Assert.AreEqual(areaTarget.Units[i].Position, movingArmy.Units[i].Position);
+                Assert.AreEqual(targetArea.Units[i].Position, finalMoveResult[i].Position);
             }
         }
 
@@ -71,9 +75,7 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
         public void Single_unit_should_reach_five_moving_steps()
         {
             // Given
-            Area movingArmy = this.CreateMovingArmy(new[] { new Coordinates(0, 0) }, playerMovePoints: 1000);
-
-            int circleRadius = 1;
+            const int circleRadius = 1;
             var pathSteps = new List<Area>
             {
                 this.Given_CreateCircleArea(new Coordinates(10, 20), circleRadius),
@@ -83,25 +85,59 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
                 this.Given_CreateCircleArea(new Coordinates(100, 50), circleRadius)
             };
 
-            foreach (Area step in pathSteps)
+            Area sourceStepArea = this.CreateArmy(new[] { new Coordinates(0, 0) }, playerMovePoints: 1000);
+
+            foreach (Area targetStepArea in pathSteps)
             {
                 var moveOperation = new MoveOperation
                 {
                     Player = this.player,
                     Mode = MoveMode.PathOfConquer,
-                    SourceArea = movingArmy,
-                    TargetArea = step
+                    SourceArea = sourceStepArea,
+                    TargetArea = targetStepArea
                 };
 
                 // When
-                this.sut.Move(moveOperation);
+                IEnumerable<HashSet<AreaUnit>> moveResults = this.sut.Move(moveOperation);
+
+                // Then
+                AreaUnit finalMoveResultUnit = moveResults.Last().Single();
+                AreaUnit targetAreaUnit = targetStepArea.Units.Single();
+                Assert.AreEqual(targetAreaUnit.Position, finalMoveResultUnit.Position);
+
+                sourceStepArea = targetStepArea;
             }
+        }
+
+        [Test]
+        [AutoData]
+        public void Single_unit_should_reach_random_target(Coordinates sourcePosition, Coordinates targetPosition)
+        {
+            //sourcePosition = new Coordinates(255, 72);
+            //targetPosition = new Coordinates(12, 189);
+
+            // Given
+            Console.WriteLine(sourcePosition);
+            Console.WriteLine(targetPosition);
+
+            int circleRadius = 1;
+            Area sourceArea = this.Given_CreateCircleArmy(sourcePosition, circleRadius);
+            Area targetArea = this.Given_CreateCircleArea(targetPosition, circleRadius);
+
+            var moveOperation = new MoveOperation
+            {
+                Player = this.player,
+                Mode = MoveMode.PathOfConquer,
+                SourceArea = sourceArea,
+                TargetArea = targetArea
+            };
+
+            // When
+            IEnumerable<HashSet<AreaUnit>> moveResults = this.sut.Move(moveOperation);
+            List<AreaUnit> finalMoveResult = moveResults.Last().ToList();
 
             // Then
-            AreaUnit finalAreaTarget = pathSteps.Last().Units.Single();
-            Assert.AreEqual(
-                finalAreaTarget.Position,
-                movingArmy.Units.Single().Position);
+            Assert.AreEqual(targetArea.Units.Single().Position, finalMoveResult.Single().Position);
         }
 
         private Area Given_CreateCircleArea(Coordinates centerPosition, int areaRadius)
@@ -118,28 +154,26 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
             };
         }
 
-        private Area Given_CreateCircleArmy(Coordinates centerPosition, int armyRadius, int playerMovePoints = 100)
+        private Area Given_CreateCircleArmy(Coordinates centerPosition, int armyRadius, int playerMovePoints = int.MaxValue)
         {
             List<Coordinates> unitsPositions = this.CreateCircleShapedUnits(centerPosition, armyRadius);
 
-            return this.CreateMovingArmy(unitsPositions, playerMovePoints);
+            return this.CreateArmy(unitsPositions, playerMovePoints);
         }
 
-        private Area CreateMovingArmy(IEnumerable<Coordinates> initPositions, int playerMovePoints = 100)
+        private Area CreateArmy(IEnumerable<Coordinates> initPositions, int playerMovePoints = 100)
         {
             IPlayer player = Substitute.For<IPlayer>();
             player.MovePoints = playerMovePoints;
 
-            List<AreaUnit> units = initPositions
-                .Select(position => new AreaUnit(position))
-                .ToList();
-
-            var targetArea = new Area
+            var sourceArea = new Area
             {
-                Units = units
+                Units = initPositions
+                    .Select(position => new AreaUnit(position))
+                    .ToList()
             };
 
-            return targetArea;
+            return sourceArea;
         }
 
         private List<Coordinates> CreateCircleShapedUnits(Coordinates centerPosition, int armyRadius)

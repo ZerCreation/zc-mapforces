@@ -56,12 +56,12 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   }
 
   public onCanvasClicked(event: MouseEvent) {
-    
     const { mouseX, mouseY } = this.getMouseCoordinates(event);
 
     // Try to move
     var moveWasDone: boolean = this.moveService.moveSelectedTo(this.unitsSelectionService.units, mouseX, mouseY);
     if (moveWasDone) {
+      console.log('Move action was done.');
       this.drawManyUnits(this.unitsSelectionService.units);
       this.unitsSelectionService.clearSelection();
       return;

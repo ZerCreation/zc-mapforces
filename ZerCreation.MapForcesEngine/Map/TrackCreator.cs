@@ -54,16 +54,16 @@ namespace ZerCreation.MapForcesEngine.Map
             Vector moveVector = endPosition - startPosition;
             // Calculates to get ratio less than 1
             bool isMoreHorizontalMove = Math.Abs(moveVector.X) > Math.Abs(moveVector.Y);
-            double directionRatio = 0;
+            float directionRatio = 0;
             if (moveVector.X != 0 && moveVector.Y != 0)
             {
                 directionRatio = isMoreHorizontalMove
-                    ? Math.Abs((double)moveVector.Y / moveVector.X)
-                    : Math.Abs((double)moveVector.X / moveVector.Y);
+                    ? Math.Abs((float)moveVector.Y / moveVector.X)
+                    : Math.Abs((float)moveVector.X / moveVector.Y);
             }
 
             Coordinates prevPosition = startPosition;
-            double shorterDirBuffer = 0;
+            float shorterDirBuffer = 0;
             var path = new Queue<Coordinates>();
 
             while (this.IsItFullPath(path, endPosition))
