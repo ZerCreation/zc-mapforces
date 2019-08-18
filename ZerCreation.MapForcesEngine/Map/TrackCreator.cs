@@ -76,7 +76,7 @@ namespace ZerCreation.MapForcesEngine.Map
 
                 if (isMoreHorizontalMove)
                 {
-                    if (shorterDirBuffer < 1)
+                    if ((shorterDirBuffer + 0.25 * directionRatio) < 1)
                     {
                         newPosition.X += Math.Sign(moveVector.X);
                         shorterDirBuffer += directionRatio;
@@ -89,7 +89,7 @@ namespace ZerCreation.MapForcesEngine.Map
                 }
                 else
                 {
-                    if (shorterDirBuffer < 1)
+                    if ((shorterDirBuffer + 0.25 * directionRatio) < 1)
                     {
                         newPosition.Y += Math.Sign(moveVector.Y);
                         shorterDirBuffer += directionRatio;

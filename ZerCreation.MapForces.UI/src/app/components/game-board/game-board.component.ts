@@ -37,6 +37,13 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
       .subscribe(() => {
         this.drawManyUnits(this.mapService.units);
       });
+
+    this.httpService.positionChanged
+      .subscribe(mapUnit => {
+        // const mapUnits: MapUnit[] = [ mapUnit ];
+        const mapViewUnit = this.mapService.findMapViewUnit(mapUnit);
+        this.drawUnit(mapViewUnit, 'black');
+      });
   }
 
   ngAfterViewInit() {

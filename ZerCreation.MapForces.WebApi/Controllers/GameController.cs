@@ -95,10 +95,18 @@ namespace ZerCreation.MapForces.WebApi.Controllers
 
             IEnumerable<HashSet<AreaUnit>> unitsPaths = this.engineDispatcher.Move(moveOperation);
 
-            foreach (HashSet<AreaUnit> unit in unitsPaths)
+            foreach (HashSet<AreaUnit> units in unitsPaths)
             {
-                await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
-                    $"player moved to ({unit.First().Position.X}, {unit.First().Position.Y})");
+                var unit = units.First();
+                var mapUnitChanged = new MapUnitDto
+                {
+                    TerrainType = TerrainTypeDto.Earth,
+                    X = unit.Position.X,
+                    Y = unit.Position.Y,
+                    Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
+                };
+
+                await this.gameHubContext.Clients.All.SendAsync("positionChangedNotification", mapUnitChanged);
             }
 
             return this.Ok();

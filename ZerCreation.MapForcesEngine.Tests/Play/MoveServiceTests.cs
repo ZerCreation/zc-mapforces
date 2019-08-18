@@ -113,8 +113,8 @@ namespace ZerCreation.MapForcesEngine.Tests.Play
         [AutoData]
         public void Single_unit_should_reach_random_target(Coordinates sourcePosition, Coordinates targetPosition)
         {
-            //sourcePosition = new Coordinates(255, 72);
-            //targetPosition = new Coordinates(12, 189);
+            //sourcePosition = new Coordinates(120, 70);
+            //targetPosition = new Coordinates(151, 69);
 
             // Given
             Console.WriteLine(sourcePosition);
