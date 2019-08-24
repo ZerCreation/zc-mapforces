@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as signalR from "@aspnet/signalr";
 import { environment } from 'src/environments/environment';
+import { MapUnit } from '../dtos/map-unit';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +10,7 @@ import { environment } from 'src/environments/environment';
 export class HttpService {
 
   private hubConnection: signalR.HubConnection
+  public positionChanged: EventEmitter<MapUnit> = new EventEmitter();
 
   constructor(private httpClient: HttpClient) { }
 
@@ -25,8 +27,8 @@ export class HttpService {
   }
 
   public addHubListener = () => {
-    this.hubConnection.on('actionsnotification', (data) => {
-      console.log(data);
+    this.hubConnection.on('positionChangedNotification', (mapUnit) => {
+      this.positionChanged.next(mapUnit);
     });
   }
 

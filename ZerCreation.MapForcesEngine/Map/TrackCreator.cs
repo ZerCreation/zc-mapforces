@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
-using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Move;
 
 namespace ZerCreation.MapForcesEngine.Map
 {
@@ -13,7 +13,7 @@ namespace ZerCreation.MapForcesEngine.Map
         {
             switch (moveOperation.Mode)
             {
-                case MoveMode.Basic:
+                case MoveMode.PathOfConquer:
                     // TODO: Use strategy pattern here
                     this.SetupBasicMovePaths(moveOperation);
                     break;
@@ -24,28 +24,28 @@ namespace ZerCreation.MapForcesEngine.Map
 
         private void SetupBasicMovePaths(MoveOperation moveOperation)
         {
-            Army movingArmy = moveOperation.MovingArmy;
-            Area areaTarget = moveOperation.AreaTarget;
+            Area sourceArea = moveOperation.SourceArea;
+            Area targetArea = moveOperation.TargetArea;
 
-            if (movingArmy.Units.Count != areaTarget.Units.Count)
+            if (sourceArea.Units.Count != targetArea.Units.Count)
             {
                 throw new ArgumentException("The number of army units differs from number of area units. " +
                     "For Basic move operation it must be the same.");
             }
 
-            int unitsCount = movingArmy.Units.Count;
+            int unitsCount = sourceArea.Units.Count;
             for (int i = 0; i < unitsCount; i++)
             {
-                MovingUnit movingUnit = movingArmy.Units[i];
-                AreaUnit areaUnit = areaTarget.Units[i];
+                AreaUnit sourceUnit = sourceArea.Units[i];
+                AreaUnit targetUnit = targetArea.Units[i];
 
-                Queue<Coordinates> movePath = this.PreparePath(movingUnit.Position, areaUnit.Position);
-                if (movePath.Last() != areaUnit.Position)
+                Queue<Coordinates> movePath = this.PreparePath(sourceUnit.Position, targetUnit.Position);
+                if (movePath.Last() != targetUnit.Position)
                 {
                     throw new Exception("Generated move path doesn't contain right target.");
                 }
 
-                movingUnit.SetupMove(movePath);
+                moveOperation.AddMovePath(movePath);
             }
         }
 
@@ -54,16 +54,16 @@ namespace ZerCreation.MapForcesEngine.Map
             Vector moveVector = endPosition - startPosition;
             // Calculates to get ratio less than 1
             bool isMoreHorizontalMove = Math.Abs(moveVector.X) > Math.Abs(moveVector.Y);
-            double directionRatio = 0;
+            float directionRatio = 0;
             if (moveVector.X != 0 && moveVector.Y != 0)
             {
                 directionRatio = isMoreHorizontalMove
-                    ? Math.Abs((double)moveVector.Y / moveVector.X)
-                    : Math.Abs((double)moveVector.X / moveVector.Y);
+                    ? Math.Abs((float)moveVector.Y / moveVector.X)
+                    : Math.Abs((float)moveVector.X / moveVector.Y);
             }
 
             Coordinates prevPosition = startPosition;
-            double shorterDirBuffer = 0;
+            float shorterDirBuffer = 0;
             var path = new Queue<Coordinates>();
 
             while (this.IsItFullPath(path, endPosition))
@@ -76,7 +76,7 @@ namespace ZerCreation.MapForcesEngine.Map
 
                 if (isMoreHorizontalMove)
                 {
-                    if (shorterDirBuffer < 1)
+                    if ((shorterDirBuffer + 0.25 * directionRatio) < 0.5)
                     {
                         newPosition.X += Math.Sign(moveVector.X);
                         shorterDirBuffer += directionRatio;
@@ -89,7 +89,7 @@ namespace ZerCreation.MapForcesEngine.Map
                 }
                 else
                 {
-                    if (shorterDirBuffer < 1)
+                    if ((shorterDirBuffer + 0.25 * directionRatio) < 0.5)
                     {
                         newPosition.Y += Math.Sign(moveVector.Y);
                         shorterDirBuffer += directionRatio;

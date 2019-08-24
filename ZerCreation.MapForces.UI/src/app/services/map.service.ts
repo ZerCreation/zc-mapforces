@@ -31,10 +31,16 @@ export class MapService {
       (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
   }
 
-  public findUnitByCoordinates(x: number, y: number) {
+  public findUnitByCoordinates(x: number, y: number): MapViewUnit {
     return this.units.find(unit => 
       (x >= unit.x && x <= unit.x + this.unitSizeWithMargin) &&
       (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
+  }
+
+  public findMapViewUnit(mapUnit: MapUnit): MapViewUnit {
+    return this.units.find(unit => 
+      (mapUnit.x >= unit.x / this.unitSizeWithMargin && mapUnit.x <= (unit.x + 1) / this.unitSizeWithMargin) &&
+      (mapUnit.y >= unit.y / this.unitSizeWithMargin && mapUnit.y <= (unit.y + 1) / this.unitSizeWithMargin));
   }
 
   public getMapUnitCoordinates(unit: MapViewUnit) {

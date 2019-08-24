@@ -55,8 +55,6 @@
     <Compile Include="Arbiters\DiplomacyArbiter.cs" />
     <Compile Include="AreaUnits\Area.cs" />
     <Compile Include="AreaUnits\IUnit.cs" />
-    <Compile Include="AreaUnits\MovingUnit.cs" />
-    <Compile Include="AreaUnits\Army.cs" />
     <Compile Include="AreaUnits\Types\AreaTypeBase.cs" />
     <Compile Include="AreaUnits\Types\Earth.cs" />
     <Compile Include="AreaUnits\Types\Water.cs" />
@@ -72,8 +70,10 @@
     <Compile Include="Map\TrackCreator.cs" />
     <Compile Include="Map\Vector.cs" />
     <Compile Include="Enums\MoveMode.cs" />
-    <Compile Include="Models\MoveOperation.cs" />
-    <Compile Include="Play\MoveService.cs" />
+    <Compile Include="Move\MoveOperation.cs" />
+    <Compile Include="Move\MoveService.cs" />
+    <Compile Include="Move\MoveUnitTracker.cs" />
+    <Compile Include="Play\IPlayer.cs" />
     <Compile Include="Play\Player.cs" />
     <Compile Include="Map\Cartographer\PlainCartographer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

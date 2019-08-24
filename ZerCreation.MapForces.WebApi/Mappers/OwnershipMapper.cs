@@ -5,7 +5,7 @@ namespace ZerCreation.MapForces.WebApi.Mappers
 {
     public static class OwnershipMapper
     {
-        public static OwnershipDto MapToDto(Player player)
+        public static OwnershipDto MapToDto(IPlayer player)
         {
             if (player == null)
             {

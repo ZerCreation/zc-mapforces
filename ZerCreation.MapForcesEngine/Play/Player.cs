@@ -3,7 +3,7 @@
 namespace ZerCreation.MapForcesEngine.Play
 {
     [Serializable()]
-    public class Player
+    public class Player : IPlayer
     {
         public Guid Id { get; }
         public string Name { get; set; }

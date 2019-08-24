@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
-using ZerCreation.MapForcesEngine.Play;
+using ZerCreation.MapForcesEngine.Move;
 
 namespace ZerCreation.MapForcesEngine
 {
@@ -41,11 +38,11 @@ namespace ZerCreation.MapForcesEngine
 
         }
 
-        public void Move(MoveOperation moveOperation)
+        public IEnumerable<HashSet<AreaUnit>> Move(MoveOperation moveOperation)
         {
             // TODO: Check if map and players are initialized
 
-            this.moveService.Move(moveOperation);
+            return this.moveService.Move(moveOperation);
         }
     }
 }

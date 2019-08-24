@@ -6,12 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForces.WebApi.HubConfig;
+using ZerCreation.MapForces.WebApi.Logic;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
-using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Move;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
@@ -25,6 +26,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
 
         public GameController(
             EngineDispatcher engineDispatcher,
+            EngineGateway engineGateway,
             IHubContext<GameHub> gameHubContext)
         {
             this.engineDispatcher = engineDispatcher;
@@ -76,25 +78,36 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             // TODO: Read it from memory using Cartographer's knowledge
             var moveOperation = new MoveOperation
             {
-                Mode = MoveMode.Basic,
-                MovingArmy = new Army
+                Player = new Player(Guid.NewGuid(), "ZwRst")
                 {
-                    Units = moveDto.UnitsToMove.Select(unit => new MovingUnit(unit.X, unit.Y)).ToList(),
-                    PlayerPossesion = new Player(Guid.NewGuid(), "ZwRst")
-                    {
-                        MovePoints = 1000
-                    }
+                    MovePoints = int.MaxValue
                 },
-                AreaTarget = new Area
+                Mode = MoveMode.PathOfConquer,
+                SourceArea = new Area
+                {
+                    Units = moveDto.UnitsToMove.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
+                },
+                TargetArea = new Area
                 {
                     Units = moveDto.UnitsTarget.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
                 }
             };
 
-            //this.engineDispatcher.Move(moveOperation);
+            IEnumerable<HashSet<AreaUnit>> unitsPaths = this.engineDispatcher.Move(moveOperation);
 
-            await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
-                $"player moved to ({moveDto.UnitsTarget[0].X}, {moveDto.UnitsTarget[0].Y})");
+            foreach (HashSet<AreaUnit> units in unitsPaths)
+            {
+                var unit = units.First();
+                var mapUnitChanged = new MapUnitDto
+                {
+                    TerrainType = TerrainTypeDto.Earth,
+                    X = unit.Position.X,
+                    Y = unit.Position.Y,
+                    Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
+                };
+
+                await this.gameHubContext.Clients.All.SendAsync("positionChangedNotification", mapUnitChanged);
+            }
 
             return this.Ok();
         }

@@ -9,7 +9,7 @@ namespace ZerCreation.MapForcesEngine.AreaUnits
     public class AreaUnit : IUnit
     {
         public Coordinates Position { get; set; }
-        public Player PlayerPossesion { get; set; }
+        public IPlayer PlayerPossesion { get; set; }
         public AreaTypeBase Type { get; set; }
 
         public AreaUnit(int initX, int initY)
