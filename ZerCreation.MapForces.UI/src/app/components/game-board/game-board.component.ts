@@ -62,21 +62,29 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public onCanvasClicked(event: MouseEvent) {
+  public async onCanvasClicked(event: MouseEvent) {
     const { mouseX, mouseY } = this.getMouseCoordinates(event);
+    const selectedUnits = this.unitsSelectionService.units;
 
-    // Try to move
-    var moveWasDone: boolean = this.moveService.moveSelectedTo(this.unitsSelectionService.units, mouseX, mouseY);
-    if (moveWasDone) {
-      console.log('Move action was done.');
-      this.drawManyUnits(this.unitsSelectionService.units);
-      this.unitsSelectionService.clearSelection();
-      return;
+    if (selectedUnits.length == 0) {
+      this.selectPlayerUnits(mouseX, mouseY, selectedUnits);
+    } else {
+      await this.moveSelectedUnits(selectedUnits, mouseX, mouseY);
     }
+  }
 
-    // Get then mark currently selected units
+  private selectPlayerUnits(mouseX: number, mouseY: number, selectedUnits: MapViewUnit[]) {
     this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
-    this.drawManyUnits(this.unitsSelectionService.units, "black");
+    this.drawManyUnits(selectedUnits, "black");
+  }
+
+  private async moveSelectedUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {
+    var moveWasDone: boolean = await this.moveService.moveSelectedTo(selectedUnits, mouseX, mouseY);
+    if (moveWasDone) {
+      console.log(`Move action was requested to the (${mouseX}, ${mouseY}) mouse coordinates.`);
+      this.drawManyUnits(selectedUnits);
+      this.unitsSelectionService.clearSelection();
+    }
   }
 
   private getMouseCoordinates(event: MouseEvent) {

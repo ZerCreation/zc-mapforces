@@ -3,7 +3,6 @@ import { MapViewUnit } from '../models/map-view-unit';
 import { MapService } from './map.service';
 import { HttpClient } from '@angular/common/http';
 import { MoveDto } from '../dtos/move-dto';
-import { MapUnit } from '../dtos/map-unit';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -15,11 +14,7 @@ export class MoveService {
     private mapService: MapService,
     private httpClient: HttpClient) { }
   
-  moveSelectedTo(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number): boolean {
-    if (selectedUnits.length == 0) {
-      return false;
-    }
-
+  public async moveSelectedTo(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number): Promise<boolean> {
     var targetCenterUnit: MapViewUnit = this.mapService.findUnitByCoordinates(mouseX, mouseY);
     if (targetCenterUnit != null) {
       const { x: moveX, y: moveY } = this.mapService.getMapUnitCoordinates(selectedUnits[0]);
@@ -29,8 +24,10 @@ export class MoveService {
         unitsTarget: [{ x: targetX, y: targetY }]
       };
 
-      this.httpClient.post(`${environment.webApiUrl}/api/game/move`, moveDto)
-        .subscribe(() => { });
+      await this.httpClient
+        .post(`${environment.webApiUrl}/api/game/move`, moveDto)
+        .toPromise();
+        
       return true;
     }
 
