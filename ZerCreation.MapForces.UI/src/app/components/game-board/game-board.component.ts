@@ -7,6 +7,7 @@ import { MapService } from 'src/app/services/map.service';
 import { MapViewUnit } from 'src/app/models/map-view-unit';
 import { UnitsSelectionService } from 'src/app/services/units-selection.service';
 import { MoveService } from 'src/app/services/move.service';
+import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
   selector: 'app-game-board',
@@ -22,7 +23,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     private httpService: HttpService,
     private mapService: MapService,
     private unitsSelectionService: UnitsSelectionService,
-    private moveService: MoveService) {}
+    private moveService: MoveService,
+    private playersService: PlayersService) {}
 
   ngOnInit() {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
@@ -32,6 +34,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
 
     this.httpService.joinToGame().pipe(
       tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
+      tap(data => this.playersService.init(data.players)),
       map(data => data.units),
       tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
       .subscribe(() => {
@@ -41,8 +44,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.httpService.positionChanged
       .subscribe(mapUnit => {
         // const mapUnits: MapUnit[] = [ mapUnit ];
+        // Update unit's ownership and color
         const mapViewUnit = this.mapService.findMapViewUnit(mapUnit);
-        this.drawUnit(mapViewUnit, 'black');
+        this.drawUnit(mapViewUnit, this.playersService.currentPlayer.color);
       });
   }
 
@@ -75,7 +79,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
 
   private selectPlayerUnits(mouseX: number, mouseY: number, selectedUnits: MapViewUnit[]) {
     this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
-    this.drawManyUnits(selectedUnits, "black");
+    this.drawManyUnits(selectedUnits, 'black');
   }
 
   private async moveSelectedUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {

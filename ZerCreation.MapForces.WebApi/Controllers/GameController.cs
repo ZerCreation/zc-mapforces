@@ -53,18 +53,32 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             // At the moment always create a new one
             MapDescription mapDescription = this.engineDispatcher.BuildMap();
 
-            var gameDescription = new GamePlayDetailsDto
+            IEnumerable<PlayerDto> players = mapDescription.AreaUnits
+                .Select(unit => unit.PlayerPossesion)
+                .Where(_ => _ != null)
+                .Select(player => new PlayerDto
+                {
+                    Id = player.Id,
+                    Name = player.Name,
+                    Color = "blue"
+                })
+                .Distinct();
+
+            List<MapUnitDto> units = mapDescription.AreaUnits.Select(unit => new MapUnitDto
             {
+                TerrainType = TerrainTypeDto.Earth,
+                X = unit.Position.X,
+                Y = unit.Position.Y,
+                Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
+            })
+            .ToList();
+
+            var gameDescription = new GamePlayDetailsDto
+             {
                 MapWidth = mapDescription.Width,
                 MapHeight = mapDescription.Height,
-                Units = mapDescription.AreaUnits.Select(unit => 
-                    new MapUnitDto
-                    {
-                        TerrainType = TerrainTypeDto.Earth,
-                        X = unit.Position.X,
-                        Y = unit.Position.Y,
-                        Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
-                    })
+                Players = players,
+                Units = units
             };
 
             await this.gameHubContext.Clients.All.SendAsync("actionsnotification", "player joined");
@@ -78,7 +92,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             // TODO: Read it from memory using Cartographer's knowledge
             var moveOperation = new MoveOperation
             {
-                Player = new Player(Guid.NewGuid(), "ZwRst")
+                Player = new Player(moveDto.PlayerId, "ZwRst")
                 {
                     MovePoints = int.MaxValue
                 },

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { MapUnit } from '../dtos/map-unit';
 import { MapViewUnit } from '../models/map-view-unit';
 import { Ownership } from '../dtos/ownership';
+import { PlayersService } from './players.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class MapService {
   public unitSize = 12;
   public unitSizeWithMargin = this.unitSize + 1;
 
-  constructor() { }
+  constructor(private playersService: PlayersService) { }
 
   public createMapViewUnits(mapUnits: MapUnit[]): void {
     this.units = mapUnits.map(unit => {
@@ -52,7 +53,7 @@ export class MapService {
 
   private selectColor(unit: MapUnit): string {
     if (unit.ownership != null) {
-      return 'orange';
+      return this.playersService.getColorByPlayerId(unit.ownership.playerId);
     }
 
     if (unit.terrainType == 'Earth') {

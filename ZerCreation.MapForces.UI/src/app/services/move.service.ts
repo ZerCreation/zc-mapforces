@@ -4,6 +4,7 @@ import { MapService } from './map.service';
 import { HttpClient } from '@angular/common/http';
 import { MoveDto } from '../dtos/move-dto';
 import { environment } from 'src/environments/environment';
+import { PlayersService } from './players.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class MoveService {
 
   constructor(
     private mapService: MapService,
-    private httpClient: HttpClient) { }
+    private httpClient: HttpClient,
+    private playersService: PlayersService) { }
   
   public async moveSelectedTo(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number): Promise<boolean> {
     var targetCenterUnit: MapViewUnit = this.mapService.findUnitByCoordinates(mouseX, mouseY);
@@ -20,6 +22,7 @@ export class MoveService {
       const { x: moveX, y: moveY } = this.mapService.getMapUnitCoordinates(selectedUnits[0]);
       const { x: targetX, y: targetY } = this.mapService.getMapUnitCoordinates(targetCenterUnit);
       let moveDto: MoveDto = {
+        playerId: this.playersService.currentPlayer.id,
         unitsToMove: [{ x: moveX, y: moveY }],
         unitsTarget: [{ x: targetX, y: targetY }]
       };
@@ -27,11 +30,10 @@ export class MoveService {
       await this.httpClient
         .post(`${environment.webApiUrl}/api/game/move`, moveDto)
         .toPromise();
-        
+
       return true;
     }
 
     return false;
   }
-
 }
