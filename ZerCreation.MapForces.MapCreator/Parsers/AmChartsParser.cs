@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Models;
 
 namespace ZerCreation.MapForces.MapCreator.Parsers
 {

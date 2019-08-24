@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ZerCreation.MapForcesEngine.AreaUnits;
 
-namespace ZerCreation.MapForcesEngine.Map
+namespace ZerCreation.MapForcesEngine.Models
 {
     [Serializable()]
     public class MapDescription

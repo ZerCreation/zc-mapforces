@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
-using ZerCreation.MapForcesEngine.Operations;
+using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine
@@ -40,22 +41,9 @@ namespace ZerCreation.MapForcesEngine
 
         }
 
-        public void Move(IEnumerable<Tuple<int, int>> armyToMove, IEnumerable<Tuple<int, int>> moveTarget)
+        public void Move(MoveOperation moveOperation)
         {
             // TODO: Check if map and players are initialized
-
-            var moveOperation = new MoveOperation
-            {
-                Mode = MoveMode.Basic,
-                MovingArmy = new Army
-                {
-                    Units = armyToMove.Select(unit => new MovingUnit(unit.Item1, unit.Item2)).ToList()
-                },
-                AreaTarget = new Area
-                {
-                    Units = moveTarget.Select(unit => new AreaUnit(unit.Item1, unit.Item2)).ToList()
-                }
-            };
 
             this.moveService.Move(moveOperation);
         }

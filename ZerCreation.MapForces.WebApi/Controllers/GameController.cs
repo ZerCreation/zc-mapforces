@@ -1,9 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using ZerCreation.MapForces.WebApi.Dtos;
+using ZerCreation.MapForces.WebApi.HubConfig;
+using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine;
+using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
+using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
 {
@@ -12,10 +21,14 @@ namespace ZerCreation.MapForces.WebApi.Controllers
     public class GameController : ControllerBase
     {
         private readonly EngineDispatcher engineDispatcher;
+        private readonly IHubContext<GameHub> gameHubContext;
 
-        public GameController(EngineDispatcher engineDispatcher)
+        public GameController(
+            EngineDispatcher engineDispatcher,
+            IHubContext<GameHub> gameHubContext)
         {
             this.engineDispatcher = engineDispatcher;
+            this.gameHubContext = gameHubContext;
         }
 
         [HttpGet]
@@ -31,7 +44,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         }
 
         [HttpPost("join")]
-        public ActionResult<GamePlayDetailsDto> JoinToGame()
+        public async Task<ActionResult<GamePlayDetailsDto>> JoinToGame()
         {
             // Find existing game
             // If not then create a new one
@@ -47,11 +60,43 @@ namespace ZerCreation.MapForces.WebApi.Controllers
                     {
                         TerrainType = TerrainTypeDto.Earth,
                         X = unit.Position.X,
-                        Y = unit.Position.Y
+                        Y = unit.Position.Y,
+                        Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
                     })
             };
 
+            await this.gameHubContext.Clients.All.SendAsync("actionsnotification", "player joined");
+
             return this.Ok(gameDescription);
+        }
+
+        [HttpPost("move")]
+        public async Task<IActionResult> Move(MoveDto moveDto)
+        {
+            // TODO: Read it from memory using Cartographer's knowledge
+            var moveOperation = new MoveOperation
+            {
+                Mode = MoveMode.Basic,
+                MovingArmy = new Army
+                {
+                    Units = moveDto.UnitsToMove.Select(unit => new MovingUnit(unit.X, unit.Y)).ToList(),
+                    PlayerPossesion = new Player(Guid.NewGuid(), "ZwRst")
+                    {
+                        MovePoints = 1000
+                    }
+                },
+                AreaTarget = new Area
+                {
+                    Units = moveDto.UnitsTarget.Select(unit => new AreaUnit(unit.X, unit.Y)).ToList()
+                }
+            };
+
+            //this.engineDispatcher.Move(moveOperation);
+
+            await this.gameHubContext.Clients.All.SendAsync("actionsnotification", 
+                $"player moved to ({moveDto.UnitsTarget[0].X}, {moveDto.UnitsTarget[0].Y})");
+
+            return this.Ok();
         }
     }
 }

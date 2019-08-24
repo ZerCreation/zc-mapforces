@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Enums;
 
-namespace ZerCreation.MapForcesEngine.Operations
+namespace ZerCreation.MapForcesEngine.Models
 {
     public class MoveOperation
     {

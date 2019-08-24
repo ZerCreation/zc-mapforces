@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using ZerCreation.MapForces.WebApi.Extensions;
+using ZerCreation.MapForces.WebApi.HubConfig;
 
 namespace ZerCreation.MapForces.WebApi
 {
@@ -21,6 +22,8 @@ namespace ZerCreation.MapForces.WebApi
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.ConfigureCors();
+
+            services.AddSignalR();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
                 //.AddControllersAsServices();
@@ -41,6 +44,11 @@ namespace ZerCreation.MapForces.WebApi
             }
 
             app.UseCors("EnableCORS");
+
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<GameHub>("/gamehub");
+            });
 
             app.UseHttpsRedirection();
             app.UseMvc();

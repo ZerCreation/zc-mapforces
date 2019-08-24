@@ -5,6 +5,8 @@ import { MapUnit } from 'src/app/dtos/map-unit';
 import { map, tap } from 'rxjs/operators';
 import { MapService } from 'src/app/services/map.service';
 import { MapViewUnit } from 'src/app/models/map-view-unit';
+import { UnitsSelectionService } from 'src/app/services/units-selection.service';
+import { MoveService } from 'src/app/services/move.service';
 
 @Component({
   selector: 'app-game-board',
@@ -15,21 +17,25 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
   private htmlCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private selectedUnits: MapViewUnit[] = [];
 
   constructor(
     private httpService: HttpService,
-    private mapService: MapService) {}
+    private mapService: MapService,
+    private unitsSelectionService: UnitsSelectionService,
+    private moveService: MoveService) {}
 
   ngOnInit() {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
+
+    this.httpService.startHubConnection();
+    this.httpService.addHubListener();
 
     this.httpService.joinToGame().pipe(
       tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
       map(data => data.units),
       tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
       .subscribe(() => {
-        this.mapService.units.forEach(unit => this.drawUnit(unit));
+        this.drawManyUnits(this.mapService.units);
       });
   }
 
@@ -50,21 +56,32 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   }
 
   public onCanvasClicked(event: MouseEvent) {
+    
+    const { mouseX, mouseY } = this.getMouseCoordinates(event);
+
+    // Try to move
+    var moveWasDone: boolean = this.moveService.moveSelectedTo(this.unitsSelectionService.units, mouseX, mouseY);
+    if (moveWasDone) {
+      this.drawManyUnits(this.unitsSelectionService.units);
+      this.unitsSelectionService.clearSelection();
+      return;
+    }
+
+    // Get then mark currently selected units
+    this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
+    this.drawManyUnits(this.unitsSelectionService.units, "black");
+  }
+
+  private getMouseCoordinates(event: MouseEvent) {
     var canvasRectangle = this.htmlCanvas.getBoundingClientRect();
     const mouseX = event.clientX - canvasRectangle.left;
     const mouseY = event.clientY - canvasRectangle.top;
 
-    var selectedUnit: MapViewUnit = this.mapService.units.find(unit => 
-      (mouseX >= unit.x && mouseX <= unit.x + this.mapService.unitSizeWithMargin) &&
-      (mouseY >= unit.y && mouseY <= unit.y + this.mapService.unitSizeWithMargin));
+    return { mouseX, mouseY };
+  }
 
-    if (selectedUnit != null) {
-      this.selectedUnits.forEach(unit => this.drawUnit(unit));
-      this.selectedUnits = [];
-      
-      this.drawUnit(selectedUnit, "black");
-      this.selectedUnits.push(selectedUnit);
-    }
+  private drawManyUnits(units: MapViewUnit[], customColor: string = null) {
+    units.forEach(unit => this.drawUnit(unit, customColor));
   }
 
   private drawUnit(unit: MapViewUnit, customColor: string = null) {

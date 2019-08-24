@@ -68,11 +68,11 @@
     <Compile Include="Map\Coordinates.cs" />
     <Compile Include="Map\Cartographer\ICartographer.cs" />
     <Compile Include="Map\MapBuilder.cs" />
-    <Compile Include="Map\MapDescription.cs" />
+    <Compile Include="Models\MapDescription.cs" />
     <Compile Include="Map\TrackCreator.cs" />
     <Compile Include="Map\Vector.cs" />
-    <Compile Include="Operations\MoveMode.cs" />
-    <Compile Include="Operations\MoveOperation.cs" />
+    <Compile Include="Enums\MoveMode.cs" />
+    <Compile Include="Models\MoveOperation.cs" />
     <Compile Include="Play\MoveService.cs" />
     <Compile Include="Play\Player.cs" />
     <Compile Include="Map\Cartographer\PlainCartographer.cs" />
@@ -82,5 +82,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
