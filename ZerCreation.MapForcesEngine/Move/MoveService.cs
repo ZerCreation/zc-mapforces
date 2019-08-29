@@ -3,7 +3,6 @@ using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
-using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Move
 {

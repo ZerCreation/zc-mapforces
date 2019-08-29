@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using ZerCreation.MapForces.WebApi.Logic;
+using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
+using ZerCreation.MapForcesEngine.Move;
 
 namespace ZerCreation.MapForces.WebApi.Configuration
 {
@@ -9,10 +11,13 @@ namespace ZerCreation.MapForces.WebApi.Configuration
         protected override void Load(ContainerBuilder builder)
         {
             base.Load(builder);
-
-            builder.RegisterType<EngineGateway>();
+            
             builder.RegisterType<BasicCartographer>().As<ICartographer>()
                 .SingleInstance();
+
+            builder.RegisterType<MoveService>();
+            builder.RegisterType<EngineDispatcher>();
+            builder.RegisterType<MapBuilder>();
         }
     }
 }

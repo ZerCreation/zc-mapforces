@@ -54,7 +54,7 @@ namespace ZerCreation.MapForces.MapCreator
             int centerUnitIdx = random.Next(areaUnits.Count);
             AreaUnit centerUnit = areaUnits[centerUnitIdx];
 
-            centerUnit.PlayerPossesion = new Player(Guid.NewGuid(), "ZwRst");
+            centerUnit.PlayerPossesion = new Player("ZwRst", "blue");
         }
 
         private void Save(MapDescription map)

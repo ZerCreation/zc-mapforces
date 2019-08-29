@@ -10,10 +10,7 @@ namespace ZerCreation.MapForcesEngine.Configuration
         {
             base.Load(builder);
 
-            builder.RegisterType<MoveService>();
-            builder.RegisterType<EngineDispatcher>();
             builder.RegisterType<TrackCreator>();
-            builder.RegisterType<MapBuilder>();
         }
     }
 }
