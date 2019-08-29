@@ -38,10 +38,12 @@ export class MapService {
       (y >= unit.y && y <= unit.y + this.unitSizeWithMargin));
   }
 
-  public findMapViewUnit(mapUnit: MapUnit): MapViewUnit {
-    return this.units.find(unit => 
-      (mapUnit.x >= unit.x / this.unitSizeWithMargin && mapUnit.x <= (unit.x + 1) / this.unitSizeWithMargin) &&
-      (mapUnit.y >= unit.y / this.unitSizeWithMargin && mapUnit.y <= (unit.y + 1) / this.unitSizeWithMargin));
+  public updateMapViewUnit(mapUnit: MapUnit): MapViewUnit {
+    const mapViewUnit = this.findMapViewUnit(mapUnit);
+    mapViewUnit.color = this.selectColor(mapUnit);
+    mapViewUnit.canBeSelected = this.isUnitOfCurrentPlayer(mapUnit.ownership);
+
+    return mapViewUnit;
   }
 
   public getMapUnitCoordinates(unit: MapViewUnit) {
@@ -57,14 +59,20 @@ export class MapService {
     }
 
     if (unit.terrainType == 'Earth') {
-      return 'green';
+      return 'gray';
     }
     
-    return 'blue';
+    return 'white';
   }
 
   private isUnitOfCurrentPlayer(ownership: Ownership): any {
     // TODO: Recognize players here
     return ownership != null;
+  }
+
+  private findMapViewUnit(mapUnit: MapUnit): MapViewUnit {
+    return this.units.find(unit => 
+      (mapUnit.x >= unit.x / this.unitSizeWithMargin && mapUnit.x <= (unit.x + 1) / this.unitSizeWithMargin) &&
+      (mapUnit.y >= unit.y / this.unitSizeWithMargin && mapUnit.y <= (unit.y + 1) / this.unitSizeWithMargin));
   }
 }

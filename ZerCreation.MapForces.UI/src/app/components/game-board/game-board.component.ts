@@ -45,7 +45,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
       .subscribe(mapUnit => {
         // const mapUnits: MapUnit[] = [ mapUnit ];
         // Update unit's ownership and color
-        const mapViewUnit = this.mapService.findMapViewUnit(mapUnit);
+        const mapViewUnit = this.mapService.updateMapViewUnit(mapUnit);
         this.drawUnit(mapViewUnit, this.playersService.currentPlayer.color);
       });
   }
@@ -58,7 +58,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.htmlCanvas.width = width * this.mapService.unitSizeWithMargin - 1;
     this.htmlCanvas.height = height * this.mapService.unitSizeWithMargin - 1;
 
-    this.context.fillStyle = 'lightgray';
+    this.context.fillStyle = 'white';
     for (let x = 0; x < this.htmlCanvas.width; x += this.mapService.unitSizeWithMargin) {
       for (let y = 0; y < this.htmlCanvas.height; y += this.mapService.unitSizeWithMargin) {
         this.context.fillRect(x, y, this.mapService.unitSize, this.mapService.unitSize);
