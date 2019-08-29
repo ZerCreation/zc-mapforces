@@ -38,7 +38,7 @@ namespace ZerCreation.MapForces.MapCreator
             {
                 string mapText = File.ReadAllText(@"C:\Zer Creation\Projects\Map Forces\Maps\amCharts.pixelMap.World-Mercator.html");
                 MapDescription map = this.parser.ParseToMap(mapText);
-                this.DefineUnitsOfPlayers(map.AreaUnits);
+                this.DefinePlayersStartUnits(map.AreaUnits);
 
                 return map;
             }
@@ -48,13 +48,21 @@ namespace ZerCreation.MapForces.MapCreator
             }
         }
 
-        private void DefineUnitsOfPlayers(List<AreaUnit> areaUnits)
+        private void DefinePlayersStartUnits(List<AreaUnit> areaUnits)
         {
             var random = new Random();
-            int centerUnitIdx = random.Next(areaUnits.Count);
-            AreaUnit centerUnit = areaUnits[centerUnitIdx];
 
-            centerUnit.PlayerPossesion = new Player("ZwRst", "blue");
+            var coloredPlayers = new Dictionary<string, string>
+            {
+                { "ZwRst", "blue" }, { "Lemnzer", "green" }, { "Renox", "red" }, { "Zenirun", "cyan" },
+                { "ShadowZ", "orange" }
+            };
+
+            foreach (var cPlayer in coloredPlayers)
+            {
+                AreaUnit playerUnit = areaUnits[random.Next(areaUnits.Count)];
+                playerUnit.PlayerPossesion = new Player(cPlayer.Key, cPlayer.Value);
+            }
         }
 
         private void Save(MapDescription map)

@@ -86,7 +86,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
                 {
                     Id = player.Id,
                     Name = player.Name,
-                    Color = "blue"
+                    Color = player.Color
                 })
                 .Distinct();
         }
