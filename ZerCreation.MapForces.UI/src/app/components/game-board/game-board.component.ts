@@ -77,6 +77,10 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public onFinishTurnButtonClicked() {
+    console.log('Turn finish button was clicked.');
+  }
+
   private selectPlayerUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {
     this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
     this.drawManyUnits(selectedUnits, 'black');
