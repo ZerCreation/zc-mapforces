@@ -71,13 +71,13 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     const selectedUnits = this.unitsSelectionService.units;
 
     if (selectedUnits.length == 0) {
-      this.selectPlayerUnits(mouseX, mouseY, selectedUnits);
+      this.selectPlayerUnits(selectedUnits, mouseX, mouseY);
     } else {
       await this.moveSelectedUnits(selectedUnits, mouseX, mouseY);
     }
   }
 
-  private selectPlayerUnits(mouseX: number, mouseY: number, selectedUnits: MapViewUnit[]) {
+  private selectPlayerUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {
     this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
     this.drawManyUnits(selectedUnits, 'black');
   }
@@ -85,7 +85,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   private async moveSelectedUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {
     var moveWasDone: boolean = await this.moveService.moveSelectedTo(selectedUnits, mouseX, mouseY);
     if (moveWasDone) {
-      console.log(`Move action was requested to the (${mouseX}, ${mouseY}) mouse coordinates.`);
+      console.log(`Moved to requested (${mouseX}, ${mouseY}) mouse coordinates.`);
       this.drawManyUnits(selectedUnits);
       this.unitsSelectionService.clearSelection();
     }

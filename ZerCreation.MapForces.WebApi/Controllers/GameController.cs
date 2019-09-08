@@ -8,10 +8,6 @@ using ZerCreation.MapForces.WebApi.HubConfig;
 using ZerCreation.MapForces.WebApi.Logic;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Enums;
-using ZerCreation.MapForcesEngine.Models;
-using ZerCreation.MapForcesEngine.Move;
-using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
 {
