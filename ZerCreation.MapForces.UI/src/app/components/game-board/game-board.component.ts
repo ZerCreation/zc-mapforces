@@ -7,6 +7,7 @@ import { MapService } from 'src/app/services/map.service';
 import { MapViewUnit } from 'src/app/models/map-view-unit';
 import { UnitsSelectionService } from 'src/app/services/units-selection.service';
 import { MoveService } from 'src/app/services/move.service';
+import { PlayersService } from 'src/app/services/players.service';
 
 @Component({
   selector: 'app-game-board',
@@ -22,7 +23,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     private httpService: HttpService,
     private mapService: MapService,
     private unitsSelectionService: UnitsSelectionService,
-    private moveService: MoveService) {}
+    private moveService: MoveService,
+    private playersService: PlayersService) {}
 
   ngOnInit() {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
@@ -32,6 +34,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
 
     this.httpService.joinToGame().pipe(
       tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
+      tap(data => this.playersService.init(data.players)),
       map(data => data.units),
       tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
       .subscribe(() => {
@@ -41,8 +44,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.httpService.positionChanged
       .subscribe(mapUnit => {
         // const mapUnits: MapUnit[] = [ mapUnit ];
-        const mapViewUnit = this.mapService.findMapViewUnit(mapUnit);
-        this.drawUnit(mapViewUnit, 'black');
+        // Update unit's ownership and color
+        const mapViewUnit = this.mapService.updateMapViewUnit(mapUnit);
+        this.drawUnit(mapViewUnit, this.playersService.currentPlayer.color);
       });
   }
 
@@ -54,7 +58,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.htmlCanvas.width = width * this.mapService.unitSizeWithMargin - 1;
     this.htmlCanvas.height = height * this.mapService.unitSizeWithMargin - 1;
 
-    this.context.fillStyle = 'lightgray';
+    this.context.fillStyle = 'white';
     for (let x = 0; x < this.htmlCanvas.width; x += this.mapService.unitSizeWithMargin) {
       for (let y = 0; y < this.htmlCanvas.height; y += this.mapService.unitSizeWithMargin) {
         this.context.fillRect(x, y, this.mapService.unitSize, this.mapService.unitSize);
@@ -62,21 +66,29 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public onCanvasClicked(event: MouseEvent) {
+  public async onCanvasClicked(event: MouseEvent) {
     const { mouseX, mouseY } = this.getMouseCoordinates(event);
+    const selectedUnits = this.unitsSelectionService.units;
 
-    // Try to move
-    var moveWasDone: boolean = this.moveService.moveSelectedTo(this.unitsSelectionService.units, mouseX, mouseY);
-    if (moveWasDone) {
-      console.log('Move action was done.');
-      this.drawManyUnits(this.unitsSelectionService.units);
-      this.unitsSelectionService.clearSelection();
-      return;
+    if (selectedUnits.length == 0) {
+      this.selectPlayerUnits(selectedUnits, mouseX, mouseY);
+    } else {
+      await this.moveSelectedUnits(selectedUnits, mouseX, mouseY);
     }
+  }
 
-    // Get then mark currently selected units
+  private selectPlayerUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {
     this.unitsSelectionService.updateUnitsSelection(mouseX, mouseY);
-    this.drawManyUnits(this.unitsSelectionService.units, "black");
+    this.drawManyUnits(selectedUnits, 'black');
+  }
+
+  private async moveSelectedUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {
+    var moveWasDone: boolean = await this.moveService.moveSelectedTo(selectedUnits, mouseX, mouseY);
+    if (moveWasDone) {
+      console.log(`Moved to requested (${mouseX}, ${mouseY}) mouse coordinates.`);
+      this.drawManyUnits(selectedUnits);
+      this.unitsSelectionService.clearSelection();
+    }
   }
 
   private getMouseCoordinates(event: MouseEvent) {

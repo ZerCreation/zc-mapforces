@@ -6,13 +6,18 @@ namespace ZerCreation.MapForcesEngine.Play
     public class Player : IPlayer
     {
         public Guid Id { get; }
-        public string Name { get; set; }
+        public string Name { get; }
+        public string Color { get; }
         public int MovePoints { get; set; }
 
-        public Player(Guid id, string name)
+        public Player(string name, string color)
         {
-            this.Id = id;
+            this.Id = Guid.NewGuid();
             this.Name = name;
+            this.Color = color;
+
+            // Temporary
+            this.MovePoints = int.MaxValue;
         }
 
     }

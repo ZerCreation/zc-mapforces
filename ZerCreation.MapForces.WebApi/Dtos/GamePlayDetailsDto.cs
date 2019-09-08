@@ -6,6 +6,7 @@ namespace ZerCreation.MapForces.WebApi.Dtos
     {
         public int MapWidth { get; set; }
         public int MapHeight { get; set; }
-        public IEnumerable<MapUnitDto> Units { get; set; }
+        public IList<MapUnitDto> Units { get; set; }
+        public IEnumerable<PlayerDto> Players { get; set; }
     }
 }
