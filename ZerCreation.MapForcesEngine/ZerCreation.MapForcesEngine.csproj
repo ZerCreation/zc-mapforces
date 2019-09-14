@@ -61,6 +61,7 @@
     <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
+    <Compile Include="GamesDispatcher.cs" />
     <Compile Include="Map\Cartographer\BasicCartographer.cs" />
     <Compile Include="Map\Coordinates.cs" />
     <Compile Include="Map\Cartographer\ICartographer.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="Play\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AreaUnits\AreaUnit.cs" />
+    <Compile Include="Turns\TurnService.cs" />
+    <Compile Include="Turns\WrongPlayerTurnException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

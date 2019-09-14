@@ -8,23 +8,31 @@ using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Move;
+using ZerCreation.MapForcesEngine.Play;
+using ZerCreation.MapForcesEngine.Turns;
 
 namespace ZerCreation.MapForces.WebApi.Logic
 {
     /// <summary>
     /// Entry point for game control
     /// </summary>
-    public class EngineDispatcher
+    public class EngineGateway
     {
         private readonly MoveService moveService;
         private readonly ICartographer cartographer;
         private readonly MapBuilder mapCreator;
+        private readonly TurnService turnService;
 
-        public EngineDispatcher(MoveService moveService, ICartographer cartographer, MapBuilder mapCreator)
+        public EngineGateway(
+            MoveService moveService, 
+            ICartographer cartographer, 
+            MapBuilder mapCreator,
+            TurnService turnService)
         {
             this.moveService = moveService;
             this.cartographer = cartographer;
             this.mapCreator = mapCreator;
+            this.turnService = turnService;
         }
 
         public GamePlayDetailsDto BuildNewGamePlay()
@@ -32,6 +40,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
             MapDescription mapDescription = this.mapCreator.BuildFromFile();
 
             this.cartographer.SaveMapWorld(mapDescription);
+            this.turnService.SetupPlayers(mapDescription);
 
             IEnumerable<PlayerDto> players = this.RetrieveAllPlayers(mapDescription);
             List<MapUnitDto> units = this.RetrieveAllUnits(mapDescription);
@@ -47,10 +56,12 @@ namespace ZerCreation.MapForces.WebApi.Logic
 
         public IEnumerable<HashSet<AreaUnit>> Move(MoveDto moveDto)
         {
+            this.turnService.ValidatePlayerCanMove(moveDto.PlayerId);
+
             // TODO: Check if map and players are initialized
             var moveOperation = new MoveOperation
             {
-                Player = this.cartographer.FindPlayerById(moveDto.PlayerId),
+                Player = this.turnService.CurrentPlayer,
                 Mode = MoveMode.PathOfConquer,
                 SourceArea = new Area
                 {
@@ -62,7 +73,18 @@ namespace ZerCreation.MapForces.WebApi.Logic
                 }
             };
 
+            // TODO: Map to and return MapUnitDto instead
             return this.moveService.Move(moveOperation);
+        }
+
+        public PlayerDto SwitchToNextTurn()
+        {
+            this.turnService.SwitchToNextTurn();
+
+            IPlayer player = this.turnService.CurrentPlayer;
+            PlayerDto playerDto = PlayerMapper.Map(player);
+
+            return playerDto;
         }
 
         private List<MapUnitDto> RetrieveAllUnits(MapDescription mapDescription)
@@ -82,12 +104,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
             return mapDescription.AreaUnits
                 .Select(unit => unit.PlayerPossesion)
                 .Where(_ => _ != null)
-                .Select(player => new PlayerDto
-                {
-                    Id = player.Id,
-                    Name = player.Name,
-                    Color = player.Color
-                })
+                .Select(player => PlayerMapper.Map(player))
                 .Distinct();
         }
     }
