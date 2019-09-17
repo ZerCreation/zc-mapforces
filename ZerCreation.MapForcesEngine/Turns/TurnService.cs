@@ -1,64 +1,68 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZerCreation.MapForcesEngine.Models;
+using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Turns
 {
     public class TurnService
     {
-        private List<IPlayer> players;
-        private Random playerOrderRandomizer;
+        private readonly HashSet<IPlayer> allPlayers;
+        private readonly HashSet<IPlayer> playersUsedInCurrentRound;
 
         public IPlayer CurrentPlayer { get; set; }
 
         public TurnService()
         {
-            this.playerOrderRandomizer = new Random();
+            this.allPlayers = new HashSet<IPlayer>();
+            this.playersUsedInCurrentRound = new HashSet<IPlayer>();
         }
 
-        public void SwitchToNextTurn()
+        public void SwitchToNextPlayer()
         {
-            int nextPlayerInTurn = this.playerOrderRandomizer.Next(0, this.players.Count);
-            this.CurrentPlayer = this.players[nextPlayerInTurn];
+            if (this.playersUsedInCurrentRound.Count == this.allPlayers.Count)
+            {
+                this.SwitchToNextRound();
+            }
+
+            this.SwitchTurn();
         }
 
-        public void SetupPlayers(MapDescription mapDescription)
+        private void SwitchToNextRound()
         {
-            this.players = mapDescription.AreaUnits
-                .Select(unit => unit.PlayerPossesion)
-                .Where(_ => _ != null)
-                .Distinct()
-                .ToList();
+            this.playersUsedInCurrentRound.Clear();
+        }
 
-            this.SwitchToNextTurn();
+        private void SwitchTurn()
+        {
+            IPlayer nextTurnPlayer = null;
+            do
+            {
+                nextTurnPlayer = this.GetRandomPlayer();
+            }
+            while (this.playersUsedInCurrentRound.Contains(nextTurnPlayer));
+
+            this.playersUsedInCurrentRound.Add(nextTurnPlayer);
+            this.CurrentPlayer = nextTurnPlayer;
         }
 
         public void ValidatePlayerCanMove(Guid playerId)
         {
-            IPlayer player = this.FindPlayerById(playerId);
+            IPlayer player = this.allPlayers.SingleOrDefault(_ => _.Id == playerId);
 
-            if (player.Id != this.CurrentPlayer.Id)
+            if (player?.Id != this.CurrentPlayer.Id)
             {
                 throw new WrongPlayerTurnException();
             }
         }
 
-        private IPlayer FindPlayerById(Guid id)
+        public IPlayer GetRandomPlayer()
         {
-            if (this.players == null)
-            {
-                throw new InvalidOperationException("Can't find any player because map hasn't been initialized yet.");
-            }
+            var random = new Random();
+            int playerIdx = random.Next(this.allPlayers.Count);
 
-            IPlayer player = this.players.FirstOrDefault(_ => _.Id == id);
-            if (player == null)
-            {
-                throw new ArgumentException($"Player with Id = {id} wasn't found.");
-            }
-
-            return player;
+            return this.allPlayers.ToList()[playerIdx];
         }
     }
 }

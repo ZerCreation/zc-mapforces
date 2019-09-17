@@ -61,7 +61,9 @@
     <Compile Include="AreaUnits\Types\WaterCorridor.cs" />
     <Compile Include="Arbiters\IArbiter.cs" />
     <Compile Include="Arbiters\GeographyArbiter.cs" />
-    <Compile Include="GamesDispatcher.cs" />
+    <Compile Include="Gameplay\GameplayInitializer.cs" />
+    <Compile Include="Gameplay\GamesDispatcher.cs" />
+    <Compile Include="Gameplay\NoSpaceForNewPlayerException.cs" />
     <Compile Include="Map\Cartographer\BasicCartographer.cs" />
     <Compile Include="Map\Coordinates.cs" />
     <Compile Include="Map\Cartographer\ICartographer.cs" />

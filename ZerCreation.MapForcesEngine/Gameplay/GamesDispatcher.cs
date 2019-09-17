@@ -1,4 +1,4 @@
-﻿namespace ZerCreation.MapForcesEngine
+﻿namespace ZerCreation.MapForcesEngine.Gameplay
 {
     /// <summary>
     /// Will be used to manage all currently playing games.

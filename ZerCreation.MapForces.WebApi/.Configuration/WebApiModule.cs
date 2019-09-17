@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using ZerCreation.MapForces.WebApi.Logic;
+using ZerCreation.MapForcesEngine.Gameplay;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Move;
@@ -17,6 +18,8 @@ namespace ZerCreation.MapForces.WebApi.Configuration
             builder.RegisterType<BasicCartographer>().As<ICartographer>()
                 .SingleInstance();
             builder.RegisterType<TurnService>()
+                .SingleInstance();
+            builder.RegisterType<GameplayInitializer>()
                 .SingleInstance();
 
             builder.RegisterType<MoveService>();

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
+using ZerCreation.MapForcesEngine.Gameplay;
 using ZerCreation.MapForcesEngine.Map;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
@@ -19,38 +21,50 @@ namespace ZerCreation.MapForces.WebApi.Logic
     public class EngineGateway
     {
         private readonly MoveService moveService;
-        private readonly ICartographer cartographer;
         private readonly MapBuilder mapCreator;
         private readonly TurnService turnService;
+        private readonly GameplayInitializer gameplayInitializer;
 
         public EngineGateway(
             MoveService moveService, 
-            ICartographer cartographer, 
             MapBuilder mapCreator,
-            TurnService turnService)
+            TurnService turnService,
+            GameplayInitializer gameplayInitializer)
         {
             this.moveService = moveService;
-            this.cartographer = cartographer;
             this.mapCreator = mapCreator;
             this.turnService = turnService;
+            this.gameplayInitializer = gameplayInitializer;
         }
 
         public GamePlayDetailsDto BuildNewGamePlay()
         {
-            MapDescription mapDescription = this.mapCreator.BuildFromFile();
+            if (!this.gameplayInitializer.IsDone)
+            {
+                MapDescription mapDescription = this.mapCreator.BuildFromFile();
+                this.gameplayInitializer.InitializeMap(mapDescription);
+            }
 
-            this.cartographer.SaveMapWorld(mapDescription);
-            this.turnService.SetupPlayers(mapDescription);
+            IPlayer currentPlayer = this.gameplayInitializer.GetNextPlayerToInitialize();
+            if (currentPlayer == null)
+            {
+                throw new NoSpaceForNewPlayerException();
+            }
 
-            IEnumerable<PlayerDto> players = this.RetrieveAllPlayers(mapDescription);
-            List<MapUnitDto> units = this.RetrieveAllUnits(mapDescription);
+            IEnumerable<PlayerDto> players = this.gameplayInitializer.Players
+                .Select(player => PlayerMapper.Map(player));
+
+            List<MapUnitDto> units = this.gameplayInitializer.AreaUnits
+                .Select(areaUnit => MapUnitMapper.Map(areaUnit))
+                .ToList();
 
             return new GamePlayDetailsDto
             {
-                MapWidth = mapDescription.Width,
-                MapHeight = mapDescription.Height,
+                MapWidth = this.gameplayInitializer.MapWidth,
+                MapHeight = this.gameplayInitializer.MapHeight,
                 Players = players,
-                Units = units
+                Units = units,
+                CurrentPlayerId = currentPlayer.Id
             };
         }
 
@@ -77,35 +91,14 @@ namespace ZerCreation.MapForces.WebApi.Logic
             return this.moveService.Move(moveOperation);
         }
 
-        public PlayerDto SwitchToNextTurn()
+        public PlayerDto SwitchToNextPlayer()
         {
-            this.turnService.SwitchToNextTurn();
+            this.turnService.SwitchToNextPlayer();
 
             IPlayer player = this.turnService.CurrentPlayer;
             PlayerDto playerDto = PlayerMapper.Map(player);
 
             return playerDto;
-        }
-
-        private List<MapUnitDto> RetrieveAllUnits(MapDescription mapDescription)
-        {
-            return mapDescription.AreaUnits.Select(unit => new MapUnitDto
-            {
-                TerrainType = TerrainTypeDto.Earth,
-                X = unit.Position.X,
-                Y = unit.Position.Y,
-                Ownership = OwnershipMapper.MapToDto(unit.PlayerPossesion)
-            })
-            .ToList();
-        }
-
-        private IEnumerable<PlayerDto> RetrieveAllPlayers(MapDescription mapDescription)
-        {
-            return mapDescription.AreaUnits
-                .Select(unit => unit.PlayerPossesion)
-                .Where(_ => _ != null)
-                .Select(player => PlayerMapper.Map(player))
-                .Distinct();
         }
     }
 }
