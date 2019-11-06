@@ -23,6 +23,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
         private readonly TurnService turnService;
         private readonly GameplayInitializer gameplayInitializer;
 
+        public bool CanStartGamePlay => this.gameplayInitializer.HaveAllPlayersJoined;
         public bool IsGamePlayStarted => this.turnService.CurrentPlayer != null;
 
         public EngineGateway(
@@ -67,16 +68,6 @@ namespace ZerCreation.MapForces.WebApi.Logic
                 Units = units,
                 NewPlayerId = newPlayer.Id
             };
-        }
-
-        public void TryToStartGamePlay()
-        {
-            if (!this.gameplayInitializer.HaveAllPlayersJoined)
-            {
-                return;
-            }
-            
-            this.SwitchToNextPlayer();
         }
 
         public IEnumerable<HashSet<AreaUnit>> Move(MoveDto moveDto)

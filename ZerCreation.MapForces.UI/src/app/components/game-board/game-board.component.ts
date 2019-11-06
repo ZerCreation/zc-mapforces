@@ -30,7 +30,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
 
     this.httpService.startHubConnection();
-    this.httpService.addHubListener();
+    this.httpService.addHubListeners();
 
     this.httpService.joinToGame().pipe(
       tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
@@ -46,7 +46,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
         // const mapUnits: MapUnit[] = [ mapUnit ];
         // Update unit's ownership and color
         const mapViewUnit = this.mapService.updateMapViewUnit(mapUnit);
-        this.drawUnit(mapViewUnit, this.playersService.currentPlayer.color);
+        this.drawUnit(mapViewUnit);
       });
   }
 

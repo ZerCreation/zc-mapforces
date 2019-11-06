@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import * as signalR from "@aspnet/signalr";
 import { environment } from 'src/environments/environment';
 import { MapUnit } from '../dtos/map-unit';
+import { Player } from '../dtos/player';
 
 @Injectable({
   providedIn: 'root'
@@ -26,9 +27,13 @@ export class HttpService {
       .catch(err => console.log('Error while starting connection: ' + err));
   }
 
-  public addHubListener = () => {
+  public addHubListeners = () => {
     this.hubConnection.on('positionChangedNotification', (mapUnit) => {
       this.positionChanged.next(mapUnit);
+    });
+
+    this.hubConnection.on('nextPlayerTurnNotification', (player: Player) => {
+      console.log(`New turn of ${player.color} player.`);
     });
   }
 

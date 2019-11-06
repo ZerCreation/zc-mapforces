@@ -53,9 +53,13 @@ namespace ZerCreation.MapForces.WebApi.Controllers
             GamePlayDetailsDto gamePlayDetailsDto = this.engineGateway.GetGamePlayForNextPlayer();
 
             await this.gameHubContext.Clients.All
-                .SendAsync("actionsnotification", $"Player(Id = {gamePlayDetailsDto.NewPlayerId}) joined game.");
+                .SendAsync("generalNotification", $"Player(Id = {gamePlayDetailsDto.NewPlayerId}) joined game.");
 
-            this.engineGateway.TryToStartGamePlay();
+            if (this.engineGateway.CanStartGamePlay)
+            {
+                await this.gameHubContext.Clients.All.SendAsync("generalNotification", "Game play is starting.");
+                await this.SwitchToNextTurn();
+            }
 
             return this.Ok(gamePlayDetailsDto);
         }
@@ -92,7 +96,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         }
 
         [HttpPut("turn")]
-        public async Task<ActionResult<PlayerDto>> SwitchToNextTurn()
+        public async Task<IActionResult> SwitchToNextTurn()
         {
             PlayerDto nextPlayerTurn = this.engineGateway.SwitchToNextPlayer();
             await this.gameHubContext.Clients.All.SendAsync("nextPlayerTurnNotification", nextPlayerTurn);
