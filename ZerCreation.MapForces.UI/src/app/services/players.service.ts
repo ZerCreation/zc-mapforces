@@ -10,14 +10,12 @@ export class PlayersService {
   
   constructor() { }
 
-  public init(players: Player[]): void {
+  public init(players: Player[], currentPlayerId: string): void {
     this.players = players;
-
-    // Temporary
-    this.currentPlayer = players[0];
+    this.currentPlayer = players.find(_ => _.id === currentPlayerId);
   }
 
-  public getColorByPlayerId(playerId: string): string {
+  public getColorById(playerId: string): string {
     const player = this.players.find(player => player.id == playerId);
     if (player == null) {
       throw new Error(`Error in setting colors of players. Player with Id = ${playerId} is unknown.`)

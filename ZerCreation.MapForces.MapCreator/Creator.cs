@@ -54,8 +54,8 @@ namespace ZerCreation.MapForces.MapCreator
 
             var coloredPlayers = new Dictionary<string, string>
             {
-                { "ZwRst", "blue" }, { "Lemnzer", "green" }, { "Renox", "red" }, { "Zenirun", "cyan" },
-                { "ShadowZ", "orange" }
+                { "ZwRst", "blue" }, { "Lemnzer", "green" },
+                //{ "Renox", "red" }, { "Zenirun", "cyan" }, { "ShadowZ", "orange" }
             };
 
             foreach (var cPlayer in coloredPlayers)

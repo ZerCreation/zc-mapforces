@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ZerCreation.MapForces.WebApi.Dtos;
 using ZerCreation.MapForces.WebApi.Mappers;
@@ -7,7 +6,6 @@ using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Enums;
 using ZerCreation.MapForcesEngine.Gameplay;
 using ZerCreation.MapForcesEngine.Map;
-using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Move;
 using ZerCreation.MapForcesEngine.Play;
@@ -25,6 +23,8 @@ namespace ZerCreation.MapForces.WebApi.Logic
         private readonly TurnService turnService;
         private readonly GameplayInitializer gameplayInitializer;
 
+        public bool IsGamePlayStarted => this.turnService.CurrentPlayer != null;
+
         public EngineGateway(
             MoveService moveService, 
             MapBuilder mapCreator,
@@ -37,20 +37,19 @@ namespace ZerCreation.MapForces.WebApi.Logic
             this.gameplayInitializer = gameplayInitializer;
         }
 
-        public GamePlayDetailsDto BuildNewGamePlay()
+        public void InitializeGameIfNotDone()
         {
-            if (!this.gameplayInitializer.IsDone)
+            if (this.gameplayInitializer.IsMapInitialized)
             {
-                MapDescription mapDescription = this.mapCreator.BuildFromFile();
-                this.gameplayInitializer.InitializeMap(mapDescription);
+                return;
             }
+            
+            MapDescription mapDescription = this.mapCreator.BuildFromFile();
+            this.gameplayInitializer.InitializeMap(mapDescription);
+        }
 
-            IPlayer currentPlayer = this.gameplayInitializer.GetNextPlayerToInitialize();
-            if (currentPlayer == null)
-            {
-                throw new NoSpaceForNewPlayerException();
-            }
-
+        public GamePlayDetailsDto GetGamePlayForNextPlayer()
+        {
             IEnumerable<PlayerDto> players = this.gameplayInitializer.Players
                 .Select(player => PlayerMapper.Map(player));
 
@@ -58,14 +57,26 @@ namespace ZerCreation.MapForces.WebApi.Logic
                 .Select(areaUnit => MapUnitMapper.Map(areaUnit))
                 .ToList();
 
+            IPlayer newPlayer = this.gameplayInitializer.GetNextPlayerToInitialize();
+
             return new GamePlayDetailsDto
             {
                 MapWidth = this.gameplayInitializer.MapWidth,
                 MapHeight = this.gameplayInitializer.MapHeight,
                 Players = players,
                 Units = units,
-                CurrentPlayerId = currentPlayer.Id
+                NewPlayerId = newPlayer.Id
             };
+        }
+
+        public void TryToStartGamePlay()
+        {
+            if (!this.gameplayInitializer.HaveAllPlayersJoined)
+            {
+                return;
+            }
+            
+            this.SwitchToNextPlayer();
         }
 
         public IEnumerable<HashSet<AreaUnit>> Move(MoveDto moveDto)

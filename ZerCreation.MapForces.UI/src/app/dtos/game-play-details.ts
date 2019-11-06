@@ -6,4 +6,5 @@ export interface GamePlayDetails {
     mapHeight: number;
     units: MapUnit[];
     players: Player[];
+    newPlayerId: string;
 }

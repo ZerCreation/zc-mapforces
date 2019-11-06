@@ -34,7 +34,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
 
     this.httpService.joinToGame().pipe(
       tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
-      tap(data => this.playersService.init(data.players)),
+      tap(data => this.playersService.init(data.players, data.newPlayerId)),
       map(data => data.units),
       tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
       .subscribe(() => {

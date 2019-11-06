@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +9,6 @@ using ZerCreation.MapForces.WebApi.HubConfig;
 using ZerCreation.MapForces.WebApi.Logic;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine.AreaUnits;
-using ZerCreation.MapForcesEngine.Gameplay;
 using ZerCreation.MapForcesEngine.Turns;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
@@ -45,21 +43,19 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         [HttpPost("join")]
         public async Task<ActionResult<GamePlayDetailsDto>> JoinToGame()
         {
-            // Find existing game
-            // If not then create a new one
-            GamePlayDetailsDto gamePlayDetailsDto;
+            if (this.engineGateway.IsGamePlayStarted)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, "There is no space for new player. Game has already started.");
+            }
 
-            try
-            {
-                gamePlayDetailsDto = this.engineGateway.BuildNewGamePlay();
-            }
-            catch (NoSpaceForNewPlayerException)
-            {
-                return StatusCode(StatusCodes.Status409Conflict, "There is no space for new player.");
-            }
+            this.engineGateway.InitializeGameIfNotDone();
+
+            GamePlayDetailsDto gamePlayDetailsDto = this.engineGateway.GetGamePlayForNextPlayer();
 
             await this.gameHubContext.Clients.All
-                .SendAsync("actionsnotification", $"Player(Id = {gamePlayDetailsDto.CurrentPlayerId}) joined game.");
+                .SendAsync("actionsnotification", $"Player(Id = {gamePlayDetailsDto.NewPlayerId}) joined game.");
+
+            this.engineGateway.TryToStartGamePlay();
 
             return this.Ok(gamePlayDetailsDto);
         }

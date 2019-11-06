@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Play;
 
 namespace ZerCreation.MapForcesEngine.Turns
 {
     public class TurnService
     {
-        private readonly HashSet<IPlayer> allPlayers;
-        private readonly HashSet<IPlayer> playersUsedInCurrentRound;
+        private HashSet<IPlayer> allPlayers;
+        private HashSet<IPlayer> playersUsedInCurrentRound;
 
         public IPlayer CurrentPlayer { get; set; }
-
-        public TurnService()
+        
+        public void Setup(HashSet<IPlayer> allPlayers)
         {
-            this.allPlayers = new HashSet<IPlayer>();
+            this.allPlayers = allPlayers;
             this.playersUsedInCurrentRound = new HashSet<IPlayer>();
         }
 
@@ -51,7 +50,7 @@ namespace ZerCreation.MapForcesEngine.Turns
         {
             IPlayer player = this.allPlayers.SingleOrDefault(_ => _.Id == playerId);
 
-            if (player?.Id != this.CurrentPlayer.Id)
+            if (player == null || player.Id != this.CurrentPlayer?.Id)
             {
                 throw new WrongPlayerTurnException();
             }

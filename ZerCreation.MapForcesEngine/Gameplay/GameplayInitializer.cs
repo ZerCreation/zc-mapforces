@@ -4,6 +4,7 @@ using ZerCreation.MapForcesEngine.AreaUnits;
 using ZerCreation.MapForcesEngine.Map.Cartographer;
 using ZerCreation.MapForcesEngine.Models;
 using ZerCreation.MapForcesEngine.Play;
+using ZerCreation.MapForcesEngine.Turns;
 
 namespace ZerCreation.MapForcesEngine.Gameplay
 {
@@ -11,18 +12,24 @@ namespace ZerCreation.MapForcesEngine.Gameplay
     {
         private MapDescription mapDescription;
         private readonly ICartographer cartographer;
+        private readonly TurnService turnService;
         private HashSet<IPlayer>.Enumerator playerInitEnumerator;
+        private HashSet<IPlayer> initializingPlayers;
 
         public HashSet<IPlayer> Players { get; private set; }
         public List<AreaUnit> AreaUnits { get; private set; }
         public int MapWidth { get; set; }
         public int MapHeight { get; set; }
 
-        public bool IsDone => this.mapDescription != null;
+        public bool IsMapInitialized => this.mapDescription != null;
+        public bool HaveAllPlayersJoined => this.initializingPlayers.Count == this.Players.Count;
 
-        public GameplayInitializer(ICartographer cartographer)
+        public GameplayInitializer(ICartographer cartographer, TurnService turnService)
         {
             this.cartographer = cartographer;
+            this.turnService = turnService;
+
+            this.initializingPlayers = new HashSet<IPlayer>();
         }
 
         public void InitializeMap(MapDescription mapDescription)
@@ -42,12 +49,16 @@ namespace ZerCreation.MapForcesEngine.Gameplay
             this.playerInitEnumerator = this.Players.GetEnumerator();
 
             this.cartographer.SaveMapDetails(this.AreaUnits, this.Players);
+            this.turnService.Setup(this.Players);
         }
 
         public IPlayer GetNextPlayerToInitialize()
         {
             this.playerInitEnumerator.MoveNext();
-            return this.playerInitEnumerator.Current;
+            IPlayer initPlayer = this.playerInitEnumerator.Current;
+            this.initializingPlayers.Add(initPlayer);
+
+            return initPlayer;
         }
     }
 }

@@ -55,7 +55,7 @@ export class MapService {
 
   private selectColor(unit: MapUnit): string {
     if (unit.ownership != null) {
-      return this.playersService.getColorByPlayerId(unit.ownership.playerId);
+      return this.playersService.getColorById(unit.ownership.playerId);
     }
 
     if (unit.terrainType == 'Earth') {
