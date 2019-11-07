@@ -98,6 +98,8 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         [HttpPut("turn")]
         public async Task<IActionResult> SwitchToNextTurn()
         {
+            // TODO: Check id of turn changing player
+
             PlayerDto nextPlayerTurn = this.engineGateway.SwitchToNextPlayer();
             await this.gameHubContext.Clients.All.SendAsync("nextPlayerTurnNotification", nextPlayerTurn);
 

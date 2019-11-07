@@ -72,7 +72,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
 
         public IEnumerable<HashSet<AreaUnit>> Move(MoveDto moveDto)
         {
-            this.turnService.ValidatePlayerCanMove(moveDto.PlayerId);
+            this.turnService.ValidateItsPlayerTurn(moveDto.PlayerId);
 
             // TODO: Check if map and players are initialized
             var moveOperation = new MoveOperation

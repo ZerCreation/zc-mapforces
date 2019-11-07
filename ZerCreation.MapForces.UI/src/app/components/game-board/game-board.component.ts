@@ -8,6 +8,7 @@ import { MapViewUnit } from 'src/app/models/map-view-unit';
 import { UnitsSelectionService } from 'src/app/services/units-selection.service';
 import { MoveService } from 'src/app/services/move.service';
 import { PlayersService } from 'src/app/services/players.service';
+import { Player } from 'src/app/dtos/player';
 
 @Component({
   selector: 'app-game-board',
@@ -18,6 +19,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
   private htmlCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
+
+  public localPlayer: Player;
+  public movingPlayer: Player;
 
   constructor(
     private httpService: HttpService,
@@ -32,14 +36,17 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.httpService.startHubConnection();
     this.httpService.addHubListeners();
 
-    this.httpService.joinToGame().pipe(
-      tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
-      tap(data => this.playersService.init(data.players, data.newPlayerId)),
-      map(data => data.units),
-      tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
-      .subscribe(() => {
-        this.drawManyUnits(this.mapService.units);
-      });
+    this.httpService.hubConnected.subscribe(() => {
+      this.httpService.joinToGame().pipe(
+        tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
+        tap(data => this.playersService.init(data.players, data.newPlayerId)),
+        map(data => data.units),
+        tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
+        .subscribe(() => {
+          this.drawManyUnits(this.mapService.units);
+          this.localPlayer = this.playersService.localPlayer;
+        });      
+    });
 
     this.httpService.positionChanged
       .subscribe(mapUnit => {
@@ -48,6 +55,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
         const mapViewUnit = this.mapService.updateMapViewUnit(mapUnit);
         this.drawUnit(mapViewUnit);
       });
+
+    this.httpService.movingPlayerChanged
+      .subscribe(player => this.movingPlayer = player);
   }
 
   ngAfterViewInit() {
@@ -77,8 +87,10 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public onFinishTurnButtonClicked() {
-    console.log('Turn finish button was clicked.');
+  public async onFinishTurnButtonClicked() {
+    if (this.localPlayer.id == this.movingPlayer.id) {
+      await this.httpService.finishTurnAsync();
+    }
   }
 
   private selectPlayerUnits(selectedUnits: MapViewUnit[], mouseX: number, mouseY: number) {

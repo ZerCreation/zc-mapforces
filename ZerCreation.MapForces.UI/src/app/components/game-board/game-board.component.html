@@ -3,5 +3,7 @@
 </canvas>
 
 <div id="player-menu">
+  <div>Player: {{ localPlayer?.color }}</div>
+  <div>Moving player: {{ movingPlayer?.color }}</div>
   <button (click)="onFinishTurnButtonClicked()">Finish turn</button>
 </div>

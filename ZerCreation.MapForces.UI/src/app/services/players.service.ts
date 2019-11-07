@@ -6,13 +6,13 @@ import { Player } from '../dtos/player';
 })
 export class PlayersService {
   private players: Player[];
-  public currentPlayer: Player;
+  public localPlayer: Player;
   
   constructor() { }
 
-  public init(players: Player[], currentPlayerId: string): void {
+  public init(players: Player[], localPlayerId: string): void {
     this.players = players;
-    this.currentPlayer = players.find(_ => _.id === currentPlayerId);
+    this.localPlayer = players.find(_ => _.id === localPlayerId);
   }
 
   public getColorById(playerId: string): string {

@@ -46,7 +46,7 @@ namespace ZerCreation.MapForcesEngine.Turns
             this.CurrentPlayer = nextTurnPlayer;
         }
 
-        public void ValidatePlayerCanMove(Guid playerId)
+        public void ValidateItsPlayerTurn(Guid playerId)
         {
             IPlayer player = this.allPlayers.SingleOrDefault(_ => _.Id == playerId);
 

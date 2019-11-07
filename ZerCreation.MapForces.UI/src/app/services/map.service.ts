@@ -66,7 +66,7 @@ export class MapService {
   }
 
   private isUnitOfCurrentPlayer(ownership: Ownership): any {
-    return ownership != null && ownership.playerId == this.playersService.currentPlayer.id;
+    return ownership != null && ownership.playerId == this.playersService.localPlayer.id;
   }
 
   private findMapViewUnit(mapUnit: MapUnit): MapViewUnit {
