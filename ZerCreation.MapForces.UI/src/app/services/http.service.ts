@@ -20,7 +20,7 @@ export class HttpService {
   constructor(private httpClient: HttpClient) { }
 
   // TODO: Move it to separated service
-  public startHubConnection() {
+  public startHubConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(`${environment.webApiUrl}/gamehub`)
       .build();

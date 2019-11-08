@@ -50,7 +50,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
             this.gameplayInitializer.InitializeMap(mapDescription);
         }
 
-        public GamePlayDetailsDto GetGamePlayForNextPlayer()
+        public GamePlayDetailsDto GetGamePlayDetailsForNextPlayer()
         {
             IEnumerable<PlayerDto> players = this.gameplayInitializer.Players
                 .Select(player => PlayerMapper.Map(player));

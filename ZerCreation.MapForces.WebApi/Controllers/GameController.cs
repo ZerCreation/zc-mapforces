@@ -50,7 +50,7 @@ namespace ZerCreation.MapForces.WebApi.Controllers
 
             this.engineGateway.InitializeGameIfNotDone();
 
-            GamePlayDetailsDto gamePlayDetailsDto = this.engineGateway.GetGamePlayForNextPlayer();
+            GamePlayDetailsDto gamePlayDetailsDto = this.engineGateway.GetGamePlayDetailsForNextPlayer();
 
             await this.gameHubContext.Clients.All
                 .SendAsync("generalNotification", $"Player(Id = {gamePlayDetailsDto.NewPlayerId}) joined game.");

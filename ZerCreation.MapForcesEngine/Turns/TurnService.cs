@@ -51,14 +51,13 @@ namespace ZerCreation.MapForcesEngine.Turns
         public void ValidateItsPlayerTurn(Guid playerId)
         {
             IPlayer player = this.allPlayers.SingleOrDefault(_ => _.Id == playerId);
-
             if (player == null || player.Id != this.CurrentPlayer?.Id)
             {
                 throw new WrongPlayerTurnException();
             }
         }
 
-        public IPlayer GetRandomPlayer()
+        private IPlayer GetRandomPlayer()
         {
             var random = new Random();
             int playerIdx = random.Next(this.allPlayers.Count);
