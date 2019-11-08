@@ -24,7 +24,7 @@ export class MoveService {
       const { x: moveX, y: moveY } = this.mapService.getMapUnitCoordinates(selectedUnits[0]);
       const { x: targetX, y: targetY } = this.mapService.getMapUnitCoordinates(targetCenterUnit);
       let moveDto: MoveDto = {
-        playerId: this.playersService.currentPlayer.id,
+        playerId: this.playersService.localPlayer.id,
         unitsToMove: [{ x: moveX, y: moveY }],
         unitsTarget: [{ x: targetX, y: targetY }]
       };

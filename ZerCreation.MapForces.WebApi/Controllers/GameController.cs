@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using ZerCreation.MapForces.WebApi.HubConfig;
 using ZerCreation.MapForces.WebApi.Logic;
 using ZerCreation.MapForces.WebApi.Mappers;
 using ZerCreation.MapForcesEngine.AreaUnits;
+using ZerCreation.MapForcesEngine.Turns;
 
 namespace ZerCreation.MapForces.WebApi.Controllers
 {
@@ -15,14 +17,14 @@ namespace ZerCreation.MapForces.WebApi.Controllers
     [ApiController]
     public class GameController : ControllerBase
     {
-        private readonly EngineDispatcher engineDispatcher;
+        private readonly EngineGateway engineGateway;
         private readonly IHubContext<GameHub> gameHubContext;
 
         public GameController(
-            EngineDispatcher engineDispatcher,
+            EngineGateway engineGateway,
             IHubContext<GameHub> gameHubContext)
         {
-            this.engineDispatcher = engineDispatcher;
+            this.engineGateway = engineGateway;
             this.gameHubContext = gameHubContext;
         }
 
@@ -41,12 +43,23 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         [HttpPost("join")]
         public async Task<ActionResult<GamePlayDetailsDto>> JoinToGame()
         {
-            // Find existing game
-            // If not then create a new one
-            // At the moment always create a new one
-            GamePlayDetailsDto gamePlayDetailsDto = this.engineDispatcher.BuildNewGamePlay();
+            if (this.engineGateway.IsGamePlayStarted)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, "There is no space for new player. Game has already started.");
+            }
 
-            await this.gameHubContext.Clients.All.SendAsync("actionsnotification", "player joined");
+            this.engineGateway.InitializeGameIfNotDone();
+
+            GamePlayDetailsDto gamePlayDetailsDto = this.engineGateway.GetGamePlayDetailsForNextPlayer();
+
+            await this.gameHubContext.Clients.All
+                .SendAsync("generalNotification", $"Player(Id = {gamePlayDetailsDto.NewPlayerId}) joined game.");
+
+            if (this.engineGateway.CanStartGamePlay)
+            {
+                await this.gameHubContext.Clients.All.SendAsync("generalNotification", "Game play is starting.");
+                await this.SwitchToNextTurn();
+            }
 
             return this.Ok(gamePlayDetailsDto);
         }
@@ -54,7 +67,16 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         [HttpPost("move")]
         public async Task<IActionResult> Move(MoveDto moveDto)
         {
-            IEnumerable<HashSet<AreaUnit>> unitsPathsResults = this.engineDispatcher.Move(moveDto);
+            IEnumerable<HashSet<AreaUnit>> unitsPathsResults;
+
+            try
+            {
+                unitsPathsResults = this.engineGateway.Move(moveDto);
+            }
+            catch (WrongPlayerTurnException ex)
+            {
+                return this.BadRequest(ex.Message);
+            }
 
             foreach (HashSet<AreaUnit> units in unitsPathsResults)
             {
@@ -69,6 +91,20 @@ namespace ZerCreation.MapForces.WebApi.Controllers
 
                 await this.gameHubContext.Clients.All.SendAsync("positionChangedNotification", mapUnitChanged);
             }
+
+            return this.Ok();
+        }
+
+        [HttpPut("turn")]
+        public async Task<IActionResult> SwitchToNextTurn()
+        {
+            // TODO: Check id of turn changing player
+
+            PlayerDto nextPlayer = this.engineGateway.SwitchToNextPlayer();
+            await this.gameHubContext.Clients.All.SendAsync("nextPlayerTurnNotification", nextPlayer);
+            
+            // HACK: Use events to call it on change
+            await this.gameHubContext.Clients.All.SendAsync("roundIdUpdateNotification", this.engineGateway.RoundId);
 
             return this.Ok();
         }

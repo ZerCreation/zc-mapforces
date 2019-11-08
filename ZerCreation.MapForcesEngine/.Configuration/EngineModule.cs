@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using ZerCreation.MapForcesEngine.Map;
-using ZerCreation.MapForcesEngine.Move;
 
 namespace ZerCreation.MapForcesEngine.Configuration
 {

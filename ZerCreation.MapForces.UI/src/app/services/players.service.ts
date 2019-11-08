@@ -6,18 +6,16 @@ import { Player } from '../dtos/player';
 })
 export class PlayersService {
   private players: Player[];
-  public currentPlayer: Player;
+  public localPlayer: Player;
   
   constructor() { }
 
-  public init(players: Player[]): void {
+  public init(players: Player[], localPlayerId: string): void {
     this.players = players;
-
-    // Temporary
-    this.currentPlayer = players[0];
+    this.localPlayer = players.find(_ => _.id === localPlayerId);
   }
 
-  public getColorByPlayerId(playerId: string): string {
+  public getColorById(playerId: string): string {
     const player = this.players.find(player => player.id == playerId);
     if (player == null) {
       throw new Error(`Error in setting colors of players. Player with Id = ${playerId} is unknown.`)

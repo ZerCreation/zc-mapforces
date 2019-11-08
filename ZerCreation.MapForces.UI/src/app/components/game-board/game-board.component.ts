@@ -8,6 +8,7 @@ import { MapViewUnit } from 'src/app/models/map-view-unit';
 import { UnitsSelectionService } from 'src/app/services/units-selection.service';
 import { MoveService } from 'src/app/services/move.service';
 import { PlayersService } from 'src/app/services/players.service';
+import { Player } from 'src/app/dtos/player';
 
 @Component({
   selector: 'app-game-board',
@@ -18,6 +19,11 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvas: ElementRef;
   private htmlCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
+
+  // TODO: Move it to player's info
+  public localPlayer: Player;
+  public movingPlayer: Player;
+  public roundId: number;
 
   constructor(
     private httpService: HttpService,
@@ -30,24 +36,30 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
     this.htmlCanvas = this.canvas.nativeElement as HTMLCanvasElement;
 
     this.httpService.startHubConnection();
-    this.httpService.addHubListener();
+    this.httpService.addHubListeners();
 
-    this.httpService.joinToGame().pipe(
-      tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
-      tap(data => this.playersService.init(data.players)),
-      map(data => data.units),
-      tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
-      .subscribe(() => {
-        this.drawManyUnits(this.mapService.units);
-      });
+    this.httpService.hubConnected.subscribe(() => {
+      this.httpService.joinToGame().pipe(
+        tap((data: GamePlayDetails) => this.drawBackground(data.mapWidth, data.mapHeight)),
+        tap(data => this.playersService.init(data.players, data.newPlayerId)),
+        map(data => data.units),
+        tap((units: MapUnit[]) => this.mapService.createMapViewUnits(units)))
+        .subscribe(() => {
+          this.drawManyUnits(this.mapService.units);
+          this.localPlayer = this.playersService.localPlayer;
+        });      
+    });
 
     this.httpService.positionChanged
       .subscribe(mapUnit => {
         // const mapUnits: MapUnit[] = [ mapUnit ];
         // Update unit's ownership and color
         const mapViewUnit = this.mapService.updateMapViewUnit(mapUnit);
-        this.drawUnit(mapViewUnit, this.playersService.currentPlayer.color);
+        this.drawUnit(mapViewUnit);
       });
+
+    this.httpService.movingPlayerChanged.subscribe(player => this.movingPlayer = player);
+    this.httpService.roundIdChanged.subscribe(id => this.roundId = id);
   }
 
   ngAfterViewInit() {
@@ -67,13 +79,23 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   }
 
   public async onCanvasClicked(event: MouseEvent) {
+    if (!this.isLocalPlayerTurn()) {
+      return;
+    }
+
     const { mouseX, mouseY } = this.getMouseCoordinates(event);
     const selectedUnits = this.unitsSelectionService.units;
 
-    if (selectedUnits.length == 0) {
+    if (selectedUnits.length === 0) {
       this.selectPlayerUnits(selectedUnits, mouseX, mouseY);
     } else {
       await this.moveSelectedUnits(selectedUnits, mouseX, mouseY);
+    }
+  }
+
+  public async onFinishTurnButtonClicked() {
+    if (this.isLocalPlayerTurn()) {
+      await this.httpService.finishTurnAsync();
     }
   }
 
@@ -106,5 +128,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   private drawUnit(unit: MapViewUnit, customColor: string = null) {
     this.context.fillStyle = customColor != null ? customColor : unit.color;
     this.context.fillRect(unit.x, unit.y, this.mapService.unitSize, this.mapService.unitSize);
+  }
+
+  private isLocalPlayerTurn(): boolean {
+    return this.localPlayer.id === this.movingPlayer.id;
   }
 }

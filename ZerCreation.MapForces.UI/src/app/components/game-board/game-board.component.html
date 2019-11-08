@@ -1,3 +1,10 @@
-<canvas #canvas id="main-board" (click)="onCanvasClicked($event)">
+<canvas #canvas id="board" (click)="onCanvasClicked($event)">
   Canvas element isn't supported for your browser. :(
 </canvas>
+
+<div id="player-menu">
+  <div>Player: {{ localPlayer?.color }}</div>
+  <div>Moving player: {{ movingPlayer?.color }}</div>
+  <div>Round: {{ roundId }}</div>
+  <button (click)="onFinishTurnButtonClicked()">Finish turn</button>
+</div>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ZerCreation.MapForces.WebApi.Dtos
 {
@@ -8,5 +9,6 @@ namespace ZerCreation.MapForces.WebApi.Dtos
         public int MapHeight { get; set; }
         public IList<MapUnitDto> Units { get; set; }
         public IEnumerable<PlayerDto> Players { get; set; }
+        public Guid NewPlayerId { get; set; }
     }
 }
