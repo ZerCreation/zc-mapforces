@@ -20,8 +20,10 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   private htmlCanvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
 
+  // TODO: Move it to player's info
   public localPlayer: Player;
   public movingPlayer: Player;
+  public roundId: number;
 
   constructor(
     private httpService: HttpService,
@@ -56,8 +58,8 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
         this.drawUnit(mapViewUnit);
       });
 
-    this.httpService.movingPlayerChanged
-      .subscribe(player => this.movingPlayer = player);
+    this.httpService.movingPlayerChanged.subscribe(player => this.movingPlayer = player);
+    this.httpService.roundIdChanged.subscribe(id => this.roundId = id);
   }
 
   ngAfterViewInit() {
@@ -77,10 +79,14 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   }
 
   public async onCanvasClicked(event: MouseEvent) {
+    if (!this.isLocalPlayerTurn()) {
+      return;
+    }
+
     const { mouseX, mouseY } = this.getMouseCoordinates(event);
     const selectedUnits = this.unitsSelectionService.units;
 
-    if (selectedUnits.length == 0) {
+    if (selectedUnits.length === 0) {
       this.selectPlayerUnits(selectedUnits, mouseX, mouseY);
     } else {
       await this.moveSelectedUnits(selectedUnits, mouseX, mouseY);
@@ -88,7 +94,7 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   }
 
   public async onFinishTurnButtonClicked() {
-    if (this.localPlayer.id == this.movingPlayer.id) {
+    if (this.isLocalPlayerTurn()) {
       await this.httpService.finishTurnAsync();
     }
   }
@@ -122,5 +128,9 @@ export class GameBoardComponent implements OnInit, AfterViewInit {
   private drawUnit(unit: MapViewUnit, customColor: string = null) {
     this.context.fillStyle = customColor != null ? customColor : unit.color;
     this.context.fillRect(unit.x, unit.y, this.mapService.unitSize, this.mapService.unitSize);
+  }
+
+  private isLocalPlayerTurn(): boolean {
+    return this.localPlayer.id === this.movingPlayer.id;
   }
 }

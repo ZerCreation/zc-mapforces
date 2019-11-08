@@ -10,6 +10,7 @@ namespace ZerCreation.MapForcesEngine.Turns
         private HashSet<IPlayer> allPlayers;
         private HashSet<IPlayer> playersUsedInCurrentRound;
 
+        public int RoundId { get; private set; } = 1;
         public IPlayer CurrentPlayer { get; set; }
         
         public void Setup(HashSet<IPlayer> allPlayers)
@@ -31,6 +32,7 @@ namespace ZerCreation.MapForcesEngine.Turns
         private void SwitchToNextRound()
         {
             this.playersUsedInCurrentRound.Clear();
+            this.RoundId++;
         }
 
         private void SwitchTurn()

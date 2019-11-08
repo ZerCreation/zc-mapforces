@@ -15,6 +15,7 @@ export class HttpService {
   public hubConnected: EventEmitter<void> = new EventEmitter();
   public positionChanged: EventEmitter<MapUnit> = new EventEmitter();
   public movingPlayerChanged: EventEmitter<Player> = new EventEmitter();
+  public roundIdChanged: EventEmitter<number> = new EventEmitter();
 
   constructor(private httpClient: HttpClient) { }
 
@@ -45,6 +46,10 @@ export class HttpService {
     this.hubConnection.on('nextPlayerTurnNotification', (player: Player) => {
       this.movingPlayerChanged.next(player);
       console.log(`New turn of ${player.color} player.`);
+    });
+
+    this.hubConnection.on('roundIdUpdateNotification', (roundId: number) => {
+      this.roundIdChanged.next(roundId);
     });
 
     this.hubConnection.on('generalNotification', (message: string) => {

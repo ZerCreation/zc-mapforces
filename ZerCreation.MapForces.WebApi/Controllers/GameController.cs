@@ -100,8 +100,11 @@ namespace ZerCreation.MapForces.WebApi.Controllers
         {
             // TODO: Check id of turn changing player
 
-            PlayerDto nextPlayerTurn = this.engineGateway.SwitchToNextPlayer();
-            await this.gameHubContext.Clients.All.SendAsync("nextPlayerTurnNotification", nextPlayerTurn);
+            PlayerDto nextPlayer = this.engineGateway.SwitchToNextPlayer();
+            await this.gameHubContext.Clients.All.SendAsync("nextPlayerTurnNotification", nextPlayer);
+            
+            // HACK: Use events to call it on change
+            await this.gameHubContext.Clients.All.SendAsync("roundIdUpdateNotification", this.engineGateway.RoundId);
 
             return this.Ok();
         }

@@ -25,6 +25,7 @@ namespace ZerCreation.MapForces.WebApi.Logic
 
         public bool CanStartGamePlay => this.gameplayInitializer.HaveAllPlayersJoined;
         public bool IsGamePlayStarted => this.turnService.CurrentPlayer != null;
+        public int RoundId => this.turnService.RoundId;
 
         public EngineGateway(
             MoveService moveService, 
